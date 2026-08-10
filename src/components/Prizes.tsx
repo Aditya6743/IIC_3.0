@@ -1,168 +1,138 @@
-import React, { useEffect, useRef } from 'react';
-import { Trophy, Award, Star, Zap, Crown, Gift } from 'lucide-react';
+import React, { useRef } from 'react';
+import { Trophy, Award, Crown, Zap } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import { Card, CardContent } from '@/components/ui/card';
+
+const fadeUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0 },
+};
+
+const prizes = [
+  {
+    position: '2nd Place',
+    icon: <Trophy className="h-12 w-12 text-gray-300" aria-hidden="true" />,
+    prize: '₹50,000',
+    gradient: 'from-gray-300 via-gray-400 to-gray-500',
+    glow: 'rgba(180, 180, 180, 0.15)',
+    borderColor: 'border-gray-400/30 group-hover:border-gray-400/60',
+    order: 'order-2 lg:order-1',
+    scale: 'lg:scale-95',
+  },
+  {
+    position: '1st Place',
+    icon: <Crown className="h-14 w-14 text-yellow-400" aria-hidden="true" />,
+    prize: '₹75,000',
+    gradient: 'from-yellow-400 via-orange-500 to-red-500',
+    glow: 'rgba(255, 165, 0, 0.15)',
+    borderColor: 'border-yellow-400/40 group-hover:border-yellow-400/70',
+    order: 'order-1 lg:order-2',
+    scale: 'lg:scale-105',
+    featured: true,
+  },
+  {
+    position: '3rd Place',
+    icon: <Award className="h-12 w-12 text-amber-600" aria-hidden="true" />,
+    prize: '₹25,000',
+    gradient: 'from-amber-600 via-amber-700 to-amber-800',
+    glow: 'rgba(180, 80, 0, 0.15)',
+    borderColor: 'border-amber-600/30 group-hover:border-amber-600/60',
+    order: 'order-3 lg:order-3',
+    scale: 'lg:scale-95',
+  },
+];
 
 const Prizes: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const elementsToAnimate = sectionRef.current?.querySelectorAll('.animate-on-scroll');
-    elementsToAnimate?.forEach((el) => observer.observe(el));
-
-    return () => {
-      elementsToAnimate?.forEach((el) => observer.unobserve(el));
-    };
-  }, []);
-
-  const mainPrizes = [
-    {
-      position: "1st Place",
-      icon: <Crown className="h-12 w-12 text-yellow-400" />,
-      prize: "₹75,000",
-      gradient: "from-yellow-400 via-orange-500 to-red-500",
-      benefits: [
-        /*"Cash prize of ₹1,00,000",
-        "Meetings with top venture capitalists",
-        "6-month mentorship program",
-        "Featured in TechCrunch article"*/
-      ]
-    },
-    {
-      position: "2nd Place",
-      icon: <Trophy className="h-12 w-12 text-gray-300" />,
-      prize: "₹50,000",
-      gradient: "from-gray-300 via-gray-400 to-gray-500",
-      benefits: [
-        /*"Cash prize of ₹50,000",
-        "3-month accelerator program",
-        "Industry mentorship connections"*/
-      ]
-    },
-    {
-      position: "3rd Place",
-      icon: <Award className="h-12 w-12 text-amber-600" />,
-      prize: "₹25,000",
-      gradient: "from-amber-600 via-amber-700 to-amber-800",
-      benefits: [
-        /*"Cash prize of ₹25,000",
-        "Hardware development kit",
-        "Exclusive workshop access"*/
-      ]
-    }
-  ];
-
-  // const categoryPrizes = [
-  //   {
-  //     category: "Best AI Implementation",
-  //     prize: "$5,000",
-  //     sponsor: "TechAI Labs",
-  //     icon: <Star className="h-6 w-6 text-pink-400" />
-  //   },
-  //   {
-  //     category: "Most Innovative Solution",
-  //     prize: "$5,000",
-  //     sponsor: "InnovateCorp",
-  //     icon: <Zap className="h-6 w-6 text-cyan-400" />
-  //   },
-  //   {
-  //     category: "Best Social Impact",
-  //     prize: "$5,000",
-  //     sponsor: "ImpactFund",
-  //     icon: <Gift className="h-6 w-6 text-purple-400" />
-  //   },
-  //   {
-  //     category: "Best UI/UX Design",
-  //     prize: "$5,000",
-  //     sponsor: "DesignWorks",
-  //     icon: <Star className="h-6 w-6 text-pink-400" />
-  //   },
-  //   {
-  //     category: "Most Technical Challenge",
-  //     prize: "$5,000",
-  //     sponsor: "CodeCraft",
-  //     icon: <Zap className="h-6 w-6 text-cyan-400" />
-  //   },
-  //   {
-  //     category: "People's Choice",
-  //     prize: "$5,000",
-  //     sponsor: "Community Vote",
-  //     icon: <Trophy className="h-6 w-6 text-yellow-400" />
-  //   }
-  // ];
+  const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
 
   return (
-    <section id="prizes" ref={sectionRef} className="py-20 space-bg">
+    <section
+      id="prizes"
+      ref={sectionRef}
+      className="py-24 space-bg"
+      aria-labelledby="prizes-heading"
+    >
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-16">
-          <div className="inline-block p-3 bg-gradient-to-br from-yellow-500/20 to-orange-600/20 rounded-full mb-4 animate-on-scroll opacity-0">
-            <Trophy className="h-8 w-8 text-yellow-400" />
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 animate-on-scroll opacity-0">
-            Prizes & <span className="gradient-text">Rewards</span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-cyan-400 mx-auto mb-6"></div>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto animate-on-scroll opacity-0">
-            7L+ in cash prizes, plus invaluable opportunities, mentorship, and resources for winners.
-          </p>
-        </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {mainPrizes.map((prize, index) => (
-            <div
+        {/* Section Header */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-block p-3 bg-gradient-to-br from-yellow-500/20 to-orange-600/20 rounded-full mb-5">
+            <Trophy className="h-7 w-7 text-yellow-400" aria-hidden="true" />
+          </div>
+          <h2
+            id="prizes-heading"
+            className="text-4xl md:text-5xl font-bold text-white mb-4"
+          >
+            Prizes &amp; <span className="gradient-text">Rewards</span>
+          </h2>
+          <div className="section-divider mb-6" aria-hidden="true" />
+          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+            ₹7L+ in cash prizes, plus invaluable opportunities, mentorship, and
+            resources for winners.
+          </p>
+        </motion.div>
+
+        {/* Prize Podium */}
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto items-end">
+          {prizes.map((prize, index) => (
+            <motion.div
               key={index}
-              className={`glass-card rounded-2xl p-8 text-center shadow-lg transform transition-all duration-300 hover:-translate-y-2 animate-on-scroll opacity-0 relative overflow-hidden`}
-              style={{ animationDelay: `${index * 150}ms` }}
+              className={`${prize.order} ${prize.scale} transition-transform duration-300`}
+              variants={fadeUp}
+              initial="initial"
+              animate={isInView ? 'animate' : 'initial'}
+              transition={{ duration: 0.55, delay: 0.15 + index * 0.12 }}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${prize.gradient} opacity-5`}></div>
-              <div className="relative z-10">
-                <div className="inline-flex items-center justify-center bg-gradient-to-br from-pink-500/10 to-purple-600/10 p-4 rounded-full mb-6">
-                  {prize.icon}
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">{prize.position}</h3>
-                <div className="text-4xl font-bold gradient-text mb-6">{prize.prize}</div>
-                <ul className="space-y-3 text-left">
-                  {prize.benefits.map((benefit, benefitIndex) => (
-                    <li key={benefitIndex} className="flex items-start text-gray-300">
-                      <Zap className="h-5 w-5 mr-2 text-pink-400 flex-shrink-0 mt-0.5" />
-                      <span>{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+              <Card
+                className={`relative overflow-hidden text-center p-8 group border ${prize.borderColor} transition-all duration-300 ${prize.featured ? 'shadow-glass-hover' : ''}`}
+              >
+                {/* Background gradient tint */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${prize.gradient} opacity-5 group-hover:opacity-10 transition-opacity duration-300`}
+                  aria-hidden="true"
+                />
+
+                {/* Featured badge */}
+                {prize.featured && (
+                  <div className="absolute -top-1 left-1/2 -translate-x-1/2">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold bg-gradient-to-r from-yellow-400 to-orange-500 text-black rounded-full">
+                      <Zap size={10} aria-hidden="true" />
+                      Top Prize
+                    </span>
+                  </div>
+                )}
+
+                <CardContent className="p-0 relative z-10">
+                  <div className="inline-flex items-center justify-center bg-gradient-to-br from-white/5 to-white/10 p-5 rounded-full mb-5 transition-transform duration-300 group-hover:scale-110">
+                    {prize.icon}
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                    {prize.position}
+                  </h3>
+                  <div className="text-5xl font-bold gradient-text mb-2">
+                    {prize.prize}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
 
-        {/*<div className="glass-card rounded-2xl p-8 animate-on-scroll opacity-0">
-          <h3 className="text-3xl font-bold gradient-text mb-8 text-center">Category Prizes</h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categoryPrizes.map((category, index) => (
-              <div
-                key={index}
-                className="glass-card rounded-xl p-6 hover:glass-card transition-all duration-300"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="bg-gradient-to-br from-pink-500/10 to-purple-600/10 p-2 rounded-lg">
-                    {category.icon}
-                  </div>
-                  <div className="text-2xl font-bold gradient-text">{category.prize}</div>
-                </div>
-                <h4 className="text-white font-bold mb-2">{category.category}</h4>
-                <div className="text-gray-400 text-sm">Sponsored by {category.sponsor}</div>
-              </div>
-            ))}
-          </div>
-        </div>*/}
+        {/* Additional prizes note */}
+        <motion.p
+          className="text-center text-gray-500 text-sm mt-10"
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.6 }}
+        >
+          Special category prizes, swag packs, and sponsor goodies to be announced.
+        </motion.p>
       </div>
     </section>
   );

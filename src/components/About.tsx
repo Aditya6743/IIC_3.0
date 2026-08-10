@@ -1,84 +1,120 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Code, Lightbulb, Users, Trophy, Sparkles } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import { Card, CardContent } from '@/components/ui/card';
+
+const fadeUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0 },
+};
+
+const features = [
+  {
+    icon: <Code className="h-7 w-7 text-pink-400" aria-hidden="true" />,
+    title: 'Code with Purpose',
+    description:
+      'Build innovative solutions that address real-world challenges across various domains.',
+    color: 'from-pink-500/20 to-rose-600/20',
+    border: 'group-hover:border-pink-400/50',
+  },
+  {
+    icon: <Lightbulb className="h-7 w-7 text-cyan-400" aria-hidden="true" />,
+    title: 'Learn & Grow',
+    description:
+      'Expand your skills through workshops, mentorship sessions, and hands-on experience.',
+    color: 'from-cyan-500/20 to-blue-600/20',
+    border: 'group-hover:border-cyan-400/50',
+  },
+  {
+    icon: <Users className="h-7 w-7 text-purple-400" aria-hidden="true" />,
+    title: 'Connect & Collaborate',
+    description:
+      'Network with fellow developers, designers, and industry professionals.',
+    color: 'from-purple-500/20 to-indigo-600/20',
+    border: 'group-hover:border-purple-400/50',
+  },
+  {
+    icon: <Trophy className="h-7 w-7 text-yellow-400" aria-hidden="true" />,
+    title: 'Win Big',
+    description:
+      'Compete for substantial prizes and recognition for your innovative solutions.',
+    color: 'from-yellow-500/20 to-orange-600/20',
+    border: 'group-hover:border-yellow-400/50',
+  },
+];
 
 const About: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const elementsToAnimate = sectionRef.current?.querySelectorAll('.animate-on-scroll');
-    elementsToAnimate?.forEach((el) => observer.observe(el));
-
-    return () => {
-      elementsToAnimate?.forEach((el) => observer.unobserve(el));
-    };
-  }, []);
-
-  const features = [
-    {
-      icon: <Code className="h-8 w-8 text-pink-400" />,
-      title: "Code with Purpose",
-      description: "Build innovative solutions that address real-world challenges across various domains."
-    },
-    {
-      icon: <Lightbulb className="h-8 w-8 text-cyan-400" />,
-      title: "Learn & Grow",
-      description: "Expand your skills through workshops, mentorship sessions, and hands-on experience."
-    },
-    {
-      icon: <Users className="h-8 w-8 text-purple-400" />,
-      title: "Connect & Collaborate",
-      description: "Network with fellow developers, designers, and industry professionals."
-    },
-    {
-      icon: <Trophy className="h-8 w-8 text-yellow-400" />,
-      title: "Win Big",
-      description: "Compete for substantial prizes and recognition for your innovative solutions."
-    }
-  ];
+  const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
 
   return (
-    <section id="about" ref={sectionRef} className="py-20 space-bg">
+    <section
+      id="about"
+      ref={sectionRef}
+      className="py-24 space-bg"
+      aria-labelledby="about-heading"
+    >
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-16">
-          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-4 animate-on-scroll opacity-0">
-            <Sparkles className="h-8 w-8 text-pink-400" />
+
+        {/* Section Header */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+        >
+          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
+            <Sparkles className="h-7 w-7 text-pink-400" aria-hidden="true" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 animate-on-scroll opacity-0">
+          <h2
+            id="about-heading"
+            className="text-4xl md:text-5xl font-bold text-white mb-4"
+          >
             About <span className="gradient-text">IIC 2.0</span>
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-cyan-400 mx-auto mb-6"></div>
-          <p className="text-xl text-gray-300 max-w-4xl mx-auto animate-on-scroll opacity-0 leading-relaxed">
-            The International Innovation Challenge (IIC) is an empowering platform for young minds to address real-world 
-            challenges. The event brings together exceptional talents in a 36-hour hackathon, allowing participants to 
-            brainstorm and devise impactful solutions under the mentorship of industry leaders. We will also feature a
-            startup carnival and international conference to foster innovation and collaboration.
+          <div className="section-divider mb-6" aria-hidden="true" />
+          <p className="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            The International Innovation Challenge (IIC) is an empowering platform for
+            young minds to address real-world challenges. The event brings together
+            exceptional talents in a 36-hour hackathon, allowing participants to
+            brainstorm and devise impactful solutions under the mentorship of industry
+            leaders. We will also feature a startup carnival and international conference
+            to foster innovation and collaboration.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+        {/* Feature Cards */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <div 
-              key={index} 
-              className="glass-card rounded-xl p-6 transition-all duration-300 hover:transform hover:-translate-y-2 animate-on-scroll opacity-0"
-              style={{ animationDelay: `${index * 100}ms` }}
+            <motion.div
+              key={index}
+              variants={fadeUp}
+              initial="initial"
+              animate={isInView ? 'animate' : 'initial'}
+              transition={{
+                duration: 0.55,
+                delay: 0.1 + index * 0.1,
+                ease: [0.4, 0, 0.2, 1],
+              }}
             >
-              <div className="bg-gradient-to-br from-pink-500/10 to-purple-600/10 inline-flex p-4 rounded-lg mb-4">
-                {feature.icon}
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-              <p className="text-gray-300">{feature.description}</p>
-            </div>
+              <Card
+                className={`h-full p-6 group border border-pink-500/10 transition-all duration-300 ${feature.border} hover:shadow-glass-hover`}
+              >
+                <CardContent className="p-0">
+                  <div
+                    className={`bg-gradient-to-br ${feature.color} inline-flex p-3.5 rounded-xl mb-5 transition-transform duration-300 group-hover:scale-110`}
+                  >
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
       </div>

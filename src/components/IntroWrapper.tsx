@@ -1,191 +1,201 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import GlowingParticles from "../components/GlowingParticles.tsx";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const IntroWrapper: React.FC = () => {
-  const [showIntro] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [glitchText, setGlitchText] = useState("IIC 2.0");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 100);
-
-    const glitchInterval = setInterval(() => {
-      if (Math.random() > 0.85) {
-        const glitched = "IIC 2.0"
-          .split("")
-          .map((char) =>
-            Math.random() > 0.7
-              ? String.fromCharCode(33 + Math.floor(Math.random() * 94))
-              : char
-          )
-          .join("");
-        setGlitchText(glitched);
-        setTimeout(() => setGlitchText("IIC 2.0"), 50);
-      }
-    }, 200);
-
-    return () => {
-      clearTimeout(timer);
-      clearInterval(glitchInterval);
-    };
+    const timer = setTimeout(() => setIsLoaded(true), 120);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleEnter = () => {
-    navigate("/home");
+    navigate('/home');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      handleEnter();
+    }
   };
 
   return (
-    <div className="min-h-screen relative space-bg text-white overflow-hidden font-mono">
-      
-      {/* Glowing Particles */}
-      <GlowingParticles maxParticles = {50}/>
+    <div
+      className="min-h-screen relative text-white overflow-hidden font-mono"
+      style={{ background: 'radial-gradient(ellipse at center, #051820 0%, #030f14 100%)' }}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      aria-label="IIC 2.0 Intro Screen — Press Enter to continue"
+    >
+      {/* Transparent background container */}
+      <div className="absolute inset-0 z-0 bg-transparent" aria-hidden="true">
+      </div>
 
-      {showIntro && (
-        <div
-          className={`fixed inset-0 z-50 flex flex-col items-center justify-center text-center px-6 transition-all duration-1000 ${
-            isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-          style={{ fontFamily: "'Orbitron', sans-serif" }}
-        >
-          <div
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(255, 20, 147, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 20, 147, 0.3) 1px, transparent 1px)
-              `,
-              backgroundSize: "50px 50px",
-              animation: "gridPulse 4s ease-in-out infinite",
-            }}
-          />
+      {/* Subtle cyber-grid overlay on top of stars */}
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(20,184,166,0.04) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(20,184,166,0.04) 1px, transparent 1px)`,
+          backgroundSize: '50px 50px',
+        }}
+        aria-hidden="true"
+      />
 
-          <div className="relative mb-2">
-            {/*<h1
-              className={`text-6xl sm:text-8xl font-extrabold gradient-text transition-all duration-300 ${
-                glitchText !== "IIC 2.0" ? "animate-pulse" : ""
-              }`}
+
+      <AnimatePresence>
+        {isLoaded && (
+          <motion.div
+            key="intro"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center text-center px-6"
+            style={{ fontFamily: "'Orbitron', sans-serif" }}
+          >
+            {/* Grid pulse overlay */}
+            <motion.div
+              className="absolute inset-0 opacity-10 pointer-events-none"
               style={{
-                textShadow:
-                  glitchText === "IIC 2.0"
-                    ? "0 2px 8px rgba(255, 20, 147, 0.6), 0 4px 16px rgba(255, 20, 147, 0.5)"
-                    : "0 0 15px rgba(255, 0, 102, 0.7), 0 0 30px rgba(255, 0, 102, 0.6)",
-                filter:
-                  glitchText !== "IIC 2.0"
-                    ? "hue-rotate(330deg) saturate(1.5)"
-                    : "none",
+                backgroundImage: `
+                  linear-gradient(rgba(255, 20, 147, 0.3) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255, 20, 147, 0.3) 1px, transparent 1px)
+                `,
+                backgroundSize: '50px 50px',
               }}
+              animate={{ opacity: [0.05, 0.2, 0.05] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              aria-hidden="true"
+            />
+
+            {/* Logo with scan-line effect */}
+            <motion.div
+              className="relative mb-4"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.7 }}
             >
-              {glitchText}
-            </h1>*/}
-
-            <img id="logo" role="button" alt="IIC-Logo.png"
-                 src="/iic-logo.png" width="700"
-            />
-
-            <div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-30 h-1"
-                style={{
-                  animation: "scanLine 3s linear infinite",
-                  top: "50%",
-                }}
-            />
-          </div>
-
-          {/*<p className="mb-5 text-cyan-300 text-xl">International Innovation Challenge 2.0</p>*/}
-          <div className="relative mb-10">
-            <p className="text-gray-300 max-w-2xl text-xl sm:text-2xl tracking-wider leading-relaxed font-light">
-              <span className="inline-block animate-pulse mr-2 text-pink-400">{">"}</span>
-              We are <span className="text-pink-400 font-semibold">
-                Back:
-              </span>{" "}
-              Bigger in
-              <span className="text-cyan-400 font-semibold"> Impact</span>
-              {"; "}
-              Bolder in{" "}
-              <span className="text-purple-400 font-semibold">
-                Innovation.
-              </span>{" "}
-              <span className="inline-block animate-pulse ml-2 text-pink-400">{"<"}</span>
-              <div
-                className="inline-block w-3 h-6 bg-pink-400 ml-2 animate-pulse"
-                style={{ animation: "blink 1s infinite" }}
+              <img
+                id="iic-intro-logo"
+                alt="IIC 2.0"
+                src="/iic-logo.png"
+                width="600"
+                className="max-w-[85vw]"
               />
-            </p>
-          </div>
+              {/* Scan line */}
+              <motion.div
+                className="absolute inset-0 h-0.5 bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-60"
+                style={{ top: '50%' }}
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
+                aria-hidden="true"
+              />
+            </motion.div>
 
-          <div className="relative group">
-            <button
-              onClick={handleEnter}
-              className="modern-button neon-button relative px-16 py-5 rounded-lg text-xl font-bold text-white transition-all duration-500 transform hover:scale-105 active:scale-95 overflow-hidden"
-              style={{
-                letterSpacing: "3px",
-              }}
+            {/* Tagline */}
+            <motion.div
+              className="relative mb-10 max-w-2xl"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-all duration-700" />
-              <span className="relative z-10">Revolutionize The World</span>
-            </button>
+              <p className="text-gray-300 text-lg sm:text-2xl tracking-wider leading-relaxed font-light">
+                <motion.span
+                  className="inline-block mr-2 text-pink-400"
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  aria-hidden="true"
+                >
+                  {'>'}
+                </motion.span>
+                We are{' '}
+                <span className="text-pink-400 font-semibold">Back:</span>{' '}
+                Bigger in{' '}
+                <span className="text-cyan-400 font-semibold">Impact</span>
+                {'; '}
+                Bolder in{' '}
+                <span className="text-purple-400 font-semibold">Innovation.</span>
+                <motion.span
+                  className="inline-block ml-2 text-pink-400"
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  aria-hidden="true"
+                >
+                  {'<'}
+                </motion.span>
+                {/* Cursor */}
+                <motion.span
+                  className="inline-block w-0.5 h-5 bg-pink-400 ml-2 align-middle"
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 0.9, repeat: Infinity }}
+                  aria-hidden="true"
+                />
+              </p>
+            </motion.div>
 
-            <div className="absolute -top-2 -left-2 w-4 h-4 border-l-2 border-t-2 border-pink-400 opacity-60" />
-            <div className="absolute -top-2 -right-2 w-4 h-4 border-r-2 border-t-2 border-pink-400 opacity-60" />
-            <div className="absolute -bottom-2 -left-2 w-4 h-4 border-l-2 border-b-2 border-pink-400 opacity-60" />
-            <div className="absolute -bottom-2 -right-2 w-4 h-4 border-r-2 border-b-2 border-pink-400 opacity-60" />
-          </div>
+            {/* CTA Button */}
+            <motion.div
+              className="relative group"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
+              {/* Corner decorations */}
+              <div className="absolute -top-2 -left-2 w-4 h-4 border-l-2 border-t-2 border-pink-400 opacity-60" aria-hidden="true" />
+              <div className="absolute -top-2 -right-2 w-4 h-4 border-r-2 border-t-2 border-pink-400 opacity-60" aria-hidden="true" />
+              <div className="absolute -bottom-2 -left-2 w-4 h-4 border-l-2 border-b-2 border-pink-400 opacity-60" aria-hidden="true" />
+              <div className="absolute -bottom-2 -right-2 w-4 h-4 border-r-2 border-b-2 border-pink-400 opacity-60" aria-hidden="true" />
 
-          <div className="mt-8 text-center">
-            <div className="text-pink-400 tracking-widest text-lg mb-2 animate-pulse">
-              // Make your dreams come true...
-            </div>
-            <div className="text-cyan-300 text-sm opacity-70 font-light">
-              [ Press ENTER to JOIN US ]
-            </div>
-          </div>
+              <button
+                onClick={handleEnter}
+                className="modern-button neon-button relative px-14 py-5 rounded-lg text-lg font-bold text-white transition-all duration-500 transform hover:scale-105 active:scale-95 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+                style={{ letterSpacing: '3px' }}
+                aria-label="Enter IIC 2.0 — Revolutionize The World"
+              >
+                {/* Shimmer */}
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+                  aria-hidden="true"
+                />
+                <span className="relative z-10">Revolutionize The World</span>
+              </button>
+            </motion.div>
 
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-pink-400 rounded-full animate-ping" />
-          <div
-            className="absolute top-3/4 right-1/4 w-1 h-1 bg-cyan-400 rounded-full animate-ping"
-            style={{ animationDelay: "1s" }}
-          />
-          <div
-            className="absolute top-1/2 left-1/6 w-1 h-1 bg-purple-400 rounded-full animate-ping"
-            style={{ animationDelay: "2s" }}
-          />
-        </div>
-      )}
+            {/* Hint text */}
+            <motion.div
+              className="mt-8 text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.1 }}
+            >
+              <motion.p
+                className="text-pink-400 tracking-widest text-sm mb-2"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                // Make your dreams come true...
+              </motion.p>
+              <p className="text-cyan-300/60 text-xs font-light">[ Press ENTER to JOIN US ]</p>
+            </motion.div>
 
-      {/* Custom Styles */}
-      <style>{`
-        @keyframes scanLine {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-
-        @keyframes gridPulse {
-          0%,
-          100% {
-            opacity: 0.1;
-          }
-          50% {
-            opacity: 0.3;
-          }
-        }
-
-        @keyframes blink {
-          0%,
-          50% {
-            opacity: 1;
-          }
-          51%,
-          100% {
-            opacity: 0;
-          }
-        }
-      `}</style>
+            {/* Floating pings */}
+            {[
+              { top: '25%', left: '25%', color: 'bg-pink-400', delay: '0s' },
+              { top: '75%', right: '25%', color: 'bg-cyan-400', delay: '1s' },
+              { top: '50%', left: '15%', color: 'bg-purple-400', delay: '2s' },
+            ].map((dot, i) => (
+              <div
+                key={i}
+                className={`absolute w-2 h-2 ${dot.color} rounded-full animate-ping`}
+                style={{ top: dot.top, left: dot.left, right: (dot as { right?: string }).right, animationDelay: dot.delay }}
+                aria-hidden="true"
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
