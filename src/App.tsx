@@ -1,23 +1,91 @@
-
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
 import Sponsors from './pages/Sponsors';
 import Gallery from './pages/Gallery';
 import JudgesMentors from './pages/JudgesMentors';
 import Guests from './pages/Guests';
 import ProblemStatements from './pages/ProblemStatements';
+import Ambassador from './pages/Ambassador';
+import PageTransition from './components/PageTransition';
+import GlobalGalaxy from './components/background/GlobalGalaxy';
+
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={location.pathname}>
+        <Route
+          path="/"
+          element={
+            <PageTransition>
+              <Home />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/sponsors"
+          element={
+            <PageTransition>
+              <Sponsors />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/gallery"
+          element={
+            <PageTransition>
+              <Gallery />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/judges-mentors"
+          element={
+            <PageTransition>
+              <JudgesMentors />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/guests"
+          element={
+            <PageTransition>
+              <Guests />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/problem-statements"
+          element={
+            <PageTransition>
+              <ProblemStatements />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/ambassador"
+          element={
+            <PageTransition>
+              <Ambassador />
+            </PageTransition>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/sponsors" element={<Sponsors />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/judges-mentors" element={<JudgesMentors />} />
-        <Route path="/guests" element={<Guests />} />
-        <Route path="/problem-statements" element={<ProblemStatements />} />
-      </Routes>
+      {/* Global Fixed Subtle Galaxy Background */}
+      <GlobalGalaxy />
+
+      <div className="relative z-10">
+        <AnimatedRoutes />
+      </div>
     </Router>
   );
 }

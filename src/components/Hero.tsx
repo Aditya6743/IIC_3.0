@@ -1,117 +1,220 @@
-import React, { useEffect, useState } from 'react';
-import { Zap, Calendar, MapPin, Rocket } from 'lucide-react';
-import GlowingParticles from './GlowingParticles';
-import Pdf from '/problem_statements.pdf'
+import React, { useEffect, useRef } from 'react';
+import { Zap, Calendar, MapPin, Rocket, CheckCircle2 } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Pdf from '/problem_statements.pdf';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const staggerContainer = {
+  animate: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+  },
+};
+
+const fadeUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] } },
+};
 
 const Hero: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
 
   useEffect(() => {
-    setIsVisible(true);
+    // GSAP subtle parallax on the decorative blobs
+    const ctx = gsap.context(() => {
+      gsap.to('.hero-blob-1', {
+        y: -50,
+        x: 20,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.5,
+        },
+      });
+      gsap.to('.hero-blob-2', {
+        y: -30,
+        x: -20,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 2,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
-
+  const highlights = [
+    'Open to all innovators',
+    '₹7L+ in goodies and prizes',
+    'Expert mentorship',
+    'Global networking opportunities',
+  ];
 
   return (
     <section
       id="hero"
-      className="relative min-h-screen pt-20 overflow-hidden space-bg flex items-center"
+      ref={sectionRef}
+      className="relative min-h-screen pt-24 pb-16 overflow-hidden flex items-center bg-transparent"
+      aria-label="Hero section"
     >
-      {/* Glowing Particles */}
-      <GlowingParticles />
 
-      {/* Floating geometric shapes */}
-      <div className="floating-shapes"></div>
 
-      <div className="container mx-auto px-4 md:px-6 z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between">
-          <div
-            className={`max-w-2xl mb-12 lg:mb-0 transition-all duration-1000 ease-out ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-            }`}
+      <div
+        className="hero-blob-1 absolute top-1/4 right-1/4 w-72 h-72 rounded-full opacity-10 blur-3xl pointer-events-none"
+        style={{ background: 'radial-gradient(circle, #6ee7b7 0%, transparent 70%)' }}
+        aria-hidden="true"
+      />
+      <div
+        className="hero-blob-2 absolute bottom-1/4 left-1/4 w-56 h-56 rounded-full opacity-10 blur-3xl pointer-events-none"
+        style={{ background: 'radial-gradient(circle, #14b8a6 0%, transparent 70%)' }}
+        aria-hidden="true"
+      />
+
+
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
+
+          {/* Left — Content */}
+          <motion.div
+            className="max-w-2xl w-full"
+            variants={staggerContainer}
+            initial="initial"
+            animate={isInView ? 'animate' : 'initial'}
           >
+            <motion.div variants={fadeUp}>
+              <Badge variant="default" className="px-4 py-1.5 text-sm mb-6 inline-flex">
+                <Rocket size={14} className="mr-1.5 text-pink-400" aria-hidden="true" />
+                <span className="gradient-text font-semibold">Submissions started!</span>
+              </Badge>
+            </motion.div>
 
-            <div className="inline-block px-6 py-2 mb-6 rounded-full glass-card">
-              <p className="text-white font-medium flex items-center">
-                <Rocket size={18} className="mr-2 text-pink-400" />
-                <span className="gradient-text">Submissions started!</span>
-              </p>
-            </div>
-
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
-              <span className="gradient-text">IIC</span> <span className="text-pink-400">2.0</span>
+            <motion.h1
+              variants={fadeUp}
+              className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6"
+            >
+              <span className="gradient-text">IIC</span>{' '}
+              <span className="text-pink-400">2.0</span>
               <br />
-              <span className="text-3xl md:text-4xl lg:text-5xl text-cyan-300">Innovation Unleashed</span>
-            </h1>
+              <span className="text-3xl md:text-4xl lg:text-5xl text-cyan-300 font-light">
+                Innovation Unleashed
+              </span>
+            </motion.h1>
 
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-              We're back with bigger impact and bolder innovation. Join the most anticipated hackathon of 2025 where dreams become reality.
-            </p>
+            <motion.p
+              variants={fadeUp}
+              className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed max-w-xl"
+            >
+              We're back with bigger impact and bolder innovation. Join the most
+              anticipated hackathon of 2025 where dreams become reality.
+            </motion.p>
 
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
-              <button className="modern-button neon-button py-4 px-8 rounded-lg text-center font-bold transition-all duration-300 shadow-md"
-              onClick={() => window.open('https://docs.google.com/forms/d/1r6umjVOO-wcnGa-XwrCkjcvPk2f8rcAo1msmgnfnCz0/edit', '_blank')} >
-                Submit
-              </button>
-              <button className="glass-card hover:glass-card text-white font-medium py-4 px-8 rounded-lg transition-all duration-300 text-center border border-cyan-400/30 shadow-sm"
-              onClick={() => window.open(Pdf, '_blank')}>
+            <motion.div
+              variants={fadeUp}
+              className="flex flex-col sm:flex-row gap-4 mb-10"
+            >
+              <Button
+                variant="neon"
+                size="lg"
+                onClick={() =>
+                  window.open(
+                    'https://docs.google.com/forms/d/1r6umjVOO-wcnGa-XwrCkjcvPk2f8rcAo1msmgnfnCz0/edit',
+                    '_blank',
+                    'noopener,noreferrer'
+                  )
+                }
+              >
+                Submit Project
+              </Button>
+              <Button
+                variant="cyan"
+                size="lg"
+                onClick={() => window.open(Pdf, '_blank')}
+              >
                 View Problems
-              </button>
-            </div>
+              </Button>
+            </motion.div>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 text-gray-300">
-              <div className="flex items-center">
-                <Calendar size={20} className="mr-2 text-pink-400" />
-                <span>September 8-9, 2025</span>
+            <motion.div
+              variants={fadeUp}
+              className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 text-gray-400"
+            >
+              <div className="flex items-center gap-2">
+                <Calendar size={18} className="text-pink-400 flex-shrink-0" aria-hidden="true" />
+                <span>September 8–9, 2025</span>
               </div>
-              <div className="flex items-center">
-                <MapPin size={20} className="mr-2 text-cyan-400" />
+              <div className="flex items-center gap-2">
+                <MapPin size={18} className="text-cyan-400 flex-shrink-0" aria-hidden="true" />
                 <span>Manipal University Jaipur</span>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          <div
-            className={`relative w-full max-w-md transition-all duration-1000 delay-300 ease-out ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-            }`}
+          {/* Right — Highlights Card */}
+          <motion.div
+            ref={cardRef}
+            className="relative w-full max-w-sm lg:max-w-md"
+            initial={{ opacity: 0, x: 40 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
           >
+            {/* Decorative glow blobs behind card */}
+            <div
+              className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full opacity-20 blur-2xl"
+              aria-hidden="true"
+            />
+            <div
+              className="absolute -bottom-4 -left-4 w-36 h-36 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full opacity-20 blur-2xl"
+              aria-hidden="true"
+            />
+
             <div className="relative z-10 glass-card p-8 rounded-2xl">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full opacity-20 blur-xl -z-10"></div>
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full opacity-20 blur-xl -z-10"></div>
-
-              {/* Hackathon Logo in Card */}
-              <div className="text-center mb-6">
+              {/* Card Header */}
+              <div className="text-center mb-7">
                 <div className="inline-block p-4 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-4">
-                  <Zap className="h-8 w-8 text-pink-400" />
+                  <Zap className="h-8 w-8 text-pink-400" aria-hidden="true" />
                 </div>
-                <h3 className="gradient-text text-2xl font-bold mb-2">Get Ready!</h3>
-                <p className="text-gray-300">The future starts here</p>
+                <h2 className="gradient-text text-2xl font-bold mb-1">Get Ready!</h2>
+                <p className="text-gray-400 text-sm">The future starts here</p>
               </div>
 
-              <div className="space-y-4">
-                <ul className="text-left text-gray-300 space-y-3">
-                  {[
-                    "Open to all innovators",
-                    "₹7L+ in goodies and prizes",
-                    "Expert mentorship",
-                    "Global networking opportunities"
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-center">
-                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-pink-400 to-cyan-400 mr-3"></div>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {/* Highlights List */}
+              <ul className="space-y-3 mb-6" aria-label="Event highlights">
+                {highlights.map((item, index) => (
+                  <motion.li
+                    key={index}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
+                    className="flex items-center gap-3 text-gray-300"
+                  >
+                    <CheckCircle2
+                      size={16}
+                      className="text-pink-400 flex-shrink-0"
+                      aria-hidden="true"
+                    />
+                    <span className="text-sm">{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
 
-              <div className="mt-6 p-4 glass-card rounded-lg">
-                <p className="text-pink-300 text-center font-medium">
+              {/* Quote footer */}
+              <div className="mt-2 p-4 glass-surface rounded-xl border border-pink-500/20">
+                <p className="text-pink-300 text-center text-sm font-medium italic">
                   "Where Innovation Meets Opportunity"
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

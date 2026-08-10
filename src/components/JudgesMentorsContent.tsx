@@ -1,147 +1,134 @@
-import React, { useEffect, useRef } from "react";
-import { Users } from "lucide-react";
+import React, { useRef, useState, useEffect } from 'react';
+import { Users } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import SpeakerCard from '@/components/SpeakerCard';
+import { Skeleton } from '@/components/ui/skeleton';
+
+interface Person {
+  avatar: string;
+  name: string;
+  designation: string;
+  company: string;
+  role: 'Judge' | 'Mentor';
+  socials: {
+    linkedin?: string;
+    instagram?: string;
+    github?: string;
+    twitter?: string;
+    website?: string;
+  };
+}
+
+const judges: Person[] = [
+  {
+    avatar: '/judge1.png',
+    name: 'Kushal Vijay',
+    designation: 'Software Engineer',
+    company: 'Microsoft',
+    role: 'Judge',
+    socials: {
+      linkedin: 'https://www.linkedin.com/in/kushalvijay/',
+      instagram: 'https://instagram.com/kushalvijay',
+      github: 'https://github.com/kushalvijay',
+    },
+  },
+  {
+    avatar: '/judge2.png',
+    name: 'Swati Maurya',
+    designation: 'Software Engineer',
+    company: 'Amazon',
+    role: 'Judge',
+    socials: {
+      linkedin: 'https://www.linkedin.com/in/swati-maurya/',
+      instagram: 'https://instagram.com',
+      github: 'https://github.com',
+    },
+  },
+  {
+    avatar: '/mentor1.png',
+    name: 'Aditi Gupta',
+    designation: 'CEO',
+    company: 'TechTip24',
+    role: 'Mentor',
+    socials: {
+      linkedin: 'https://www.linkedin.com/in/aditi-gupta-techtip24/',
+      instagram: 'https://instagram.com',
+      website: 'https://techtip24.com',
+    },
+  },
+  {
+    avatar: '/mentor2.png',
+    name: 'Bhagirath Giri',
+    designation: 'Director',
+    company: 'WsCube Tech',
+    role: 'Mentor',
+    socials: {
+      linkedin: 'https://www.linkedin.com/in/bhagirath-giri/',
+      instagram: 'https://instagram.com',
+      website: 'https://wscubetech.com',
+    },
+  },
+  {
+    avatar: '/mentor3.png',
+    name: 'Sonam Chhikara',
+    designation: 'Associate',
+    company: 'PwC',
+    role: 'Mentor',
+    socials: {
+      linkedin: 'https://www.linkedin.com/in/sonam-chhikara-pwc/',
+      instagram: 'https://instagram.com',
+    },
+  },
+];
 
 const JudgesMentorsContent: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-fade-in");
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const elementsToAnimate =
-      sectionRef.current?.querySelectorAll(".animate-on-scroll");
-    elementsToAnimate?.forEach((el) => observer.observe(el));
-
-    return () => {
-      elementsToAnimate?.forEach((el) => observer.unobserve(el));
-    };
-  }, []);
-
-  const judges = [
-    {
-      icon: (
-        <img
-          src="/judge1.png"
-          alt="Judge 1"
-          className="h-20 w-20 object-cover rounded-full"
-        />
-      ),
-      name: "Kushal Vijay",
-      designation: "Software Engineer, Microsoft"
-    },
-    {
-      icon: (
-        <img
-          src="/judge2.png"
-          alt="Judge 2"
-          className="h-20 w-20 object-cover rounded-full"
-        />
-      ),
-      name: "Swati Maurya",
-      designation: "Software Engineer, Amazon"
-    },
-    {
-      icon: (
-        <img
-          src="/mentor1.png"
-          alt="Mentor 1"
-          className="h-20 w-20 object-cover rounded-full"
-        />
-      ),
-      name: "Aditi Gupta",
-      designation: "CEO, TechTip24"
-    },
-    {
-      icon: (
-        <img
-          src="/mentor2.png"
-          alt="Mentor 2"
-          className="h-20 w-20 object-cover rounded-full"
-        />
-      ),
-      name: "Bhagirath Giri",
-      designation: "Director, WsCube Tech"
-    },
-    {
-      icon: (
-        <img
-          src="/mentor3.png"
-          alt="Mentor 3"
-          className="h-20 w-20 object-cover rounded-full"
-        />
-      ),
-      name: "Sonam Chhikara",
-      designation: "Associate, PwC Acceleration Centers"
-    },
-  ];
-
+  const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
 
   return (
     <div className="min-h-screen space-bg" ref={sectionRef}>
       <main className="container mx-auto px-4 py-20">
-        {/* Judges Section */}
-        <div className="animate-on-scroll opacity-0 mb-20">
-          <div className="text-center mb-12">
-            <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-4">
-              <Users className="h-8 w-8 text-pink-400" />
-            </div>
-            <h3 className="text-3xl font-bold gradient-text mb-2">
-              Meet the Judges and Mentors
-            </h3>
-            <div className="w-16 h-0.5 bg-gradient-to-r from-pink-400 to-cyan-400 mx-auto"></div>
-          </div>
-          {/* 2 Judges → 2 columns */}
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {judges.map((judge, i) => (
-              <div
-                key={i}
-                className="glass-card rounded-xl p-6 group relative overflow-hidden text-center"
-              >
-                <div className="flex items-center justify-center h-50 mb-4">
-                  {judge.icon}
-                </div>
-                <h4 className="text-white font-bold text-lg mb-2 group-hover:text-pink-400 transition-colors duration-300">
-                  {judge.name}
-                </h4>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  {judge.designation}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Mentors Section */}
-        {/*<div className="animate-on-scroll opacity-0">*/}
-        {/*  <div className="text-center mb-12">*/}
-        {/*    <h3 className="text-3xl font-bold gradient-text mb-2">Mentors</h3>*/}
-        {/*    <div className="w-16 h-0.5 bg-gradient-to-r from-purple-400 to-indigo-500 mx-auto"></div>*/}
-        {/*  </div>*/}
-        {/*  /!* 3 Mentors → 3 columns *!/*/}
-        {/*  <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">*/}
-        {/*    {mentors.map((mentor, i) => (*/}
-        {/*      <div*/}
-        {/*        key={i}*/}
-        {/*        className="glass-card rounded-xl p-6 group relative overflow-hidden text-center"*/}
-        {/*      >*/}
-        {/*        <div className="flex items-center justify-center h-20 mb-4">*/}
-        {/*          {mentor.icon}*/}
-        {/*        </div>*/}
-        {/*        <h4 className="text-white font-bold text-lg mb-2 group-hover:text-purple-400 transition-colors duration-300">*/}
-        {/*          {mentor.name}*/}
-        {/*        </h4>*/}
-        {/*      </div>*/}
-        {/*    ))}*/}
-        {/*  </div>*/}
-        {/*</div>*/}
+        {/* Header */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
+            <Users className="h-7 w-7 text-pink-400" aria-hidden="true" />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+            Judges &amp; <span className="gradient-text">Mentors</span>
+          </h1>
+          <div className="section-divider mb-6" aria-hidden="true" />
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            Industry leaders and experts guiding and evaluating your innovations.
+          </p>
+        </motion.div>
+
+        {/* Cards Grid */}
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch justify-items-center">
+          {judges.map((person, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.08 + i * 0.06, duration: 0.45 }}
+              className="w-full flex justify-center"
+            >
+              <SpeakerCard
+                avatar={person.avatar}
+                name={person.name}
+                designation={person.designation}
+                company={person.company}
+                role={person.role}
+                socials={person.socials}
+              />
+            </motion.div>
+          ))}
+        </div>
       </main>
     </div>
   );

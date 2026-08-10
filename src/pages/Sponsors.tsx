@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SponsorsContent from '../components/SponsorsContent';
-import GlowingParticles from '../components/GlowingParticles';
 
 const Sponsors: React.FC = () => {
   useEffect(() => {
@@ -10,8 +9,7 @@ const Sponsors: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a1931] relative">
-      <GlowingParticles />
+    <div className="min-h-screen bg-transparent relative">
       <Navbar />
       <SponsorsContent />
       <Footer />

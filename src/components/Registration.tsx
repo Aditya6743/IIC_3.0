@@ -1,83 +1,109 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Check, Rocket, Sparkles } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+
+const benefits = [
+  'Connect with industry professionals and peers',
+  'Compete for ₹7L+ in prizes',
+  'Learn new skills and technologies',
+  'Build your portfolio with impressive projects',
+  'Potential job opportunities with sponsor companies',
+];
 
 const Registration: React.FC = () => {
-
   const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const elementsToAnimate = sectionRef.current?.querySelectorAll('.animate-on-scroll');
-    elementsToAnimate?.forEach((el) => observer.observe(el));
-
-    return () => {
-      elementsToAnimate?.forEach((el) => observer.unobserve(el));
-    };
-  }, []);
-
-
-  const benefits = [
-    "Connect with industry professionals and peers",
-    "Compete for ₹7L+ in prizes",
-    "Learn new skills and technologies",
-    "Build your portfolio with impressive projects",
-    "Potential job opportunities with sponsor companies"
-  ];
+  const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
 
   return (
-    <section id="register" ref={sectionRef} className="py-20 space-bg">
+    <section
+      id="register"
+      ref={sectionRef}
+      className="py-24 space-bg"
+      aria-labelledby="register-heading"
+    >
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-16">
-          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-4 animate-on-scroll opacity-0">
-            <Rocket className="h-8 w-8 text-pink-400" />
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
+            <Rocket className="h-7 w-7 text-pink-400" aria-hidden="true" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 animate-on-scroll opacity-0">
+          <h2
+            id="register-heading"
+            className="text-4xl md:text-5xl font-bold text-white mb-4"
+          >
             Register for <span className="gradient-text">IIC 2.0</span>
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-cyan-400 mx-auto mb-6"></div>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto animate-on-scroll opacity-0">
+          <div className="section-divider mb-6" aria-hidden="true" />
+          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
             Secure your spot for the biggest hackathon of the year.
           </p>
-        </div>
+        </motion.div>
 
         <div className="flex justify-center">
-          <div className="w-full max-w-4xl animate-on-scroll opacity-0">
-            <div className="glass-card rounded-2xl p-8 md:p-12">
-              <div className="flex items-center justify-center mb-8">
-                <Sparkles className="h-8 w-8 text-pink-400 mr-3" />
-                <h3 className="text-3xl font-bold gradient-text">Why Join IIC 2.0?</h3>
+          <motion.div
+            className="w-full max-w-4xl"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <div className="glass-card rounded-2xl p-8 md:p-12 relative overflow-hidden">
+              {/* Background decoration */}
+              <div
+                className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-pink-500/10 to-transparent rounded-full blur-3xl pointer-events-none"
+                aria-hidden="true"
+              />
+
+              <div className="flex items-center justify-center mb-10 relative z-10">
+                <div className="p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mr-3">
+                  <Sparkles className="h-7 w-7 text-pink-400" aria-hidden="true" />
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold gradient-text">
+                  Why Join IIC 2.0?
+                </h3>
               </div>
-              
-              <div className="grid md:grid-cols-2 gap-6 mb-10">
+
+              <div className="grid md:grid-cols-2 gap-4 mb-10 relative z-10">
                 {benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-start p-4 glass-card rounded-lg">
-                      <div className="bg-gradient-to-br from-pink-500 to-purple-600 rounded-full p-1 mt-1 mr-4 flex-shrink-0">
-                        <Check className="h-4 w-4 text-white"/>
-                      </div>
-                      <span className="text-gray-300 text-lg">{benefit}</span>
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ delay: 0.3 + index * 0.08, duration: 0.4 }}
+                    className="flex items-start gap-3 p-4 glass-surface rounded-xl border border-pink-500/10 hover:border-pink-500/30 transition-colors duration-300"
+                  >
+                    <div className="bg-gradient-to-br from-pink-500 to-purple-600 rounded-full p-1 mt-0.5 flex-shrink-0">
+                      <Check className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                     </div>
+                    <span className="text-gray-300 text-sm leading-relaxed">
+                      {benefit}
+                    </span>
+                  </motion.div>
                 ))}
               </div>
 
-              <div className="text-center">
-                <button className="modern-button neon-button py-4 px-12 rounded-lg text-xl font-bold transition-all duration-300 shadow-md"
-                onClick={() => window.open('https://unstop.com/hackathons/international-innovation-challenge-20-manipal-university-mu-jaipur-1527559', '_blank')}>
-                  <Rocket size={20} className="inline mr-2" />
+              <div className="text-center relative z-10">
+                <Button
+                  variant="neon"
+                  size="xl"
+                  onClick={() =>
+                    window.open(
+                      'https://unstop.com/hackathons/international-innovation-challenge-20-manipal-university-mu-jaipur-1527559',
+                      '_blank',
+                      'noopener,noreferrer'
+                    )
+                  }
+                >
+                  <Rocket size={20} aria-hidden="true" />
                   Register Now!!
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

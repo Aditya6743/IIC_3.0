@@ -1,102 +1,276 @@
-import React, { useEffect, useRef } from "react";
-import { Sparkles } from "lucide-react";
+import React, { useRef, useState, useEffect } from 'react';
+import { Sparkles, Linkedin, Twitter, Github, Globe } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+
+interface Guest {
+  avatar: string;
+  name: string;
+  designation: string;
+  company: string;
+  role: 'Chief Guest' | 'Guest Speaker' | 'Special Guest';
+  bio: string;
+  socials: {
+    linkedin?: string;
+    twitter?: string;
+    github?: string;
+    website?: string;
+  };
+}
+
+const guests: Guest[] = [
+  {
+    avatar: '/guest1.png',
+    name: 'Jai G. Singla',
+    designation: 'Scientist Engineer SF',
+    company: 'SAC-ISRO',
+    role: 'Chief Guest',
+    bio: 'Leading space application center research and earth observation payload design.',
+    socials: {
+      linkedin: 'https://linkedin.com',
+      website: 'https://isro.gov.in',
+    },
+  },
+  {
+    avatar: '/guest2.png',
+    name: 'Arjun Kumar',
+    designation: 'Associate Director & Scientist',
+    company: 'DRDO',
+    role: 'Special Guest',
+    bio: 'Pioneering defense technologies and aerospace engineering research for military systems.',
+    socials: {
+      linkedin: 'https://linkedin.com',
+    },
+  },
+  {
+    avatar: '/guest3.png',
+    name: 'Jean Calleja Agius',
+    designation: 'Head of Anatomy',
+    company: 'University of Malta',
+    role: 'Guest Speaker',
+    bio: 'Specialized in molecular anatomy and clinical genomics studies.',
+    socials: {
+      linkedin: 'https://linkedin.com',
+      website: 'https://um.edu.mt',
+    },
+  },
+  {
+    avatar: '/guest4.png',
+    name: 'Ing. Carl James Debono',
+    designation: 'Dean',
+    company: 'University of Malta',
+    role: 'Guest Speaker',
+    bio: 'Researching intelligent video systems, wireless transmission, and communication networks.',
+    socials: {
+      linkedin: 'https://linkedin.com',
+      github: 'https://github.com',
+    },
+  },
+  {
+    avatar: '/guest5.png',
+    name: 'Neville Calleja',
+    designation: 'Chair, EHII',
+    company: 'WHO',
+    role: 'Special Guest',
+    bio: 'Directing healthcare databases and information systems for international medical standards.',
+    socials: {
+      linkedin: 'https://linkedin.com',
+      twitter: 'https://x.com',
+    },
+  },
+  {
+    avatar: '/guest6.png',
+    name: 'Lalit Garg',
+    designation: 'Professor',
+    company: 'University of Malta',
+    role: 'Guest Speaker',
+    bio: 'Expert in machine learning, information extraction, and medical diagnostic databases.',
+    socials: {
+      linkedin: 'https://linkedin.com',
+      github: 'https://github.com',
+    },
+  },
+  {
+    avatar: '/guest7.png',
+    name: 'Varadraj P. Gurupur',
+    designation: 'Professor',
+    company: 'University of Central Florida',
+    role: 'Guest Speaker',
+    bio: 'Specialized in decision support systems and health information management systems.',
+    socials: {
+      linkedin: 'https://linkedin.com',
+      website: 'https://ucf.edu',
+    },
+  },
+  {
+    avatar: '/guest8.png',
+    name: 'Vincent Lopez',
+    designation: 'CEO',
+    company: 'Parker Health Inc., USA',
+    role: 'Special Guest',
+    bio: 'Leading innovative electronic health record integration and SaaS platforms.',
+    socials: {
+      linkedin: 'https://linkedin.com',
+      twitter: 'https://x.com',
+    },
+  },
+];
+
+const GuestCard: React.FC<{ guest: Guest; delay: number; isInView: boolean }> = ({
+  guest,
+  delay,
+  isInView,
+}) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay, duration: 0.5, ease: 'easeOut' }}
+      className="w-full flex"
+    >
+      <div className="w-full bg-[#061820]/40 border border-border/30 rounded-2xl p-6 flex flex-col items-center text-center transition-all duration-300 hover:border-cyan-400/40 hover:shadow-glass hover:-translate-y-1 group relative overflow-hidden justify-between h-full">
+        {/* Profile Image (Circular Avatar with Hover Zoom) */}
+        <div className="relative w-28 h-28 rounded-full overflow-hidden border border-border/30 bg-secondary/20 mb-5 flex-shrink-0">
+          {!imageLoaded && (
+            <Skeleton className="absolute inset-0 w-full h-full rounded-full" />
+          )}
+          <img
+            src={guest.avatar}
+            alt={`${guest.name} portrait`}
+            className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            onError={(e) => {
+              const img = e.currentTarget;
+              img.style.display = 'none';
+              setImageLoaded(true);
+            }}
+          />
+        </div>
+
+        {/* Role Badge */}
+        <Badge
+          variant={guest.role === 'Chief Guest' ? 'default' : 'cyan'}
+          className="text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full mb-3"
+        >
+          {guest.role}
+        </Badge>
+
+        {/* Identity Details */}
+        <div className="flex-1 flex flex-col items-center">
+          <h3 className="text-lg font-bold text-white tracking-tight leading-tight mb-1">
+            {guest.name}
+          </h3>
+          <span className="text-sm font-medium text-gray-300 leading-snug">
+            {guest.designation}
+          </span>
+          <span className="text-xs font-semibold text-primary/80 uppercase tracking-wider block mt-1">
+            {guest.company}
+          </span>
+          <p className="text-xs text-gray-400 leading-relaxed mt-3 px-2 line-clamp-2 min-h-[32px]">
+            {guest.bio}
+          </p>
+        </div>
+
+        {/* Divider */}
+        <div className="w-full border-t border-border/20 my-4" aria-hidden="true" />
+
+        {/* Social Row */}
+        <div className="flex justify-center items-center gap-2.5" role="list" aria-label={`${guest.name} social links`}>
+          {guest.socials.linkedin && (
+            <a
+              href={guest.socials.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${guest.name}'s LinkedIn profile`}
+              role="listitem"
+              className="p-1.5 rounded-md bg-secondary/20 text-gray-400 hover:text-white hover:bg-secondary/60 transition-all duration-200 border border-border/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            >
+              <Linkedin className="h-4 w-4" aria-hidden="true" />
+            </a>
+          )}
+          {guest.socials.twitter && (
+            <a
+              href={guest.socials.twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${guest.name}'s X profile`}
+              role="listitem"
+              className="p-1.5 rounded-md bg-secondary/20 text-gray-400 hover:text-white hover:bg-secondary/60 transition-all duration-200 border border-border/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            >
+              <Twitter className="h-4 w-4" aria-hidden="true" />
+            </a>
+          )}
+          {guest.socials.github && (
+            <a
+              href={guest.socials.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${guest.name}'s GitHub profile`}
+              role="listitem"
+              className="p-1.5 rounded-md bg-secondary/20 text-gray-400 hover:text-white hover:bg-secondary/60 transition-all duration-200 border border-border/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            >
+              <Github className="h-4 w-4" aria-hidden="true" />
+            </a>
+          )}
+          {guest.socials.website && (
+            <a
+              href={guest.socials.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${guest.name}'s personal website`}
+              role="listitem"
+              className="p-1.5 rounded-md bg-secondary/20 text-gray-400 hover:text-white hover:bg-secondary/60 transition-all duration-200 border border-border/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            >
+              <Globe className="h-4 w-4" aria-hidden="true" />
+            </a>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const GuestsContent: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-fade-in");
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const elementsToAnimate =
-      sectionRef.current?.querySelectorAll(".animate-on-scroll");
-    elementsToAnimate?.forEach((el) => observer.observe(el));
-
-    return () => {
-      elementsToAnimate?.forEach((el) => observer.unobserve(el));
-    };
-  }, []);
-
-  const guests = [
-    { 
-      icon: <img src="/guest1.png" alt="Guest 1" className="h-20 w-20 object-cover rounded-full" />, 
-      name: "Jai G. Singla",
-      designation: "Scientist Engineer SF, SAC-ISRO"
-    },
-    { 
-      icon: <img src="/guest2.png" alt="Guest 2" className="h-20 w-20 object-cover rounded-full" />, 
-      name: "Arjun Kumar",
-      designation: "Associate Director & Scientist, DRDO"
-    },
-    { 
-      icon: <img src="/guest3.png" alt="Guest 3" className="h-20 w-20 object-cover rounded-full" />, 
-      name: "Jean Calleja Agius",
-      designation: "Head of ANatomy, University of Malta"
-    },
-    { 
-      icon: <img src="/guest4.png" alt="Guest 4" className="h-20 w-20 object-cover rounded-full" />, 
-      name: "Ing. Carl James Debono",
-      designation: "Dean, University of Malta"
-    },
-    { 
-      icon: <img src="/guest5.png" alt="Guest 5" className="h-20 w-20 object-cover rounded-full" />, 
-      name: "Neville Calleja",
-      designation: "Chair, European Health Information Initiative, WHO"
-    },
-    { 
-      icon: <img src="/guest6.png" alt="Guest 6" className="h-20 w-20 object-cover rounded-full" />, 
-      name: "Lalit Garg",
-      designation: "Professor, University of Malta"
-    },
-    { 
-      icon: <img src="/guest7.png" alt="Guest 7" className="h-20 w-20 object-cover rounded-full" />, 
-      name: "Varadraj P. Gurupur",
-      designation: "Professor, University of Central Florida"
-    },
-    { 
-      icon: <img src="/guest8.png" alt="Guest 8" className="h-20 w-20 object-cover rounded-full" />, 
-      name: "Vincent Lopez",
-      designation: "CEO, Parker Health Inc., USA"
-    },
-  ];
+  const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
 
   return (
     <div className="min-h-screen space-bg" ref={sectionRef}>
       <main className="container mx-auto px-4 py-20">
-        <div className="animate-on-scroll opacity-0">
-          <div className="text-center mb-12">
-            <div className="inline-block p-3 bg-gradient-to-br from-yellow-400/20 to-orange-500/20 rounded-full mb-4">
-              <Sparkles className="h-8 w-8 text-yellow-400" />
-            </div>
-            <h3 className="text-3xl font-bold gradient-text mb-2">Our Guests</h3>
-            <div className="w-16 h-0.5 bg-gradient-to-r from-yellow-400 to-orange-500 mx-auto"></div>
+
+        {/* Header */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
+            <Sparkles className="h-7 w-7 text-pink-400" aria-hidden="true" />
           </div>
-          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {guests.map((guest, i) => (
-              <div
-                key={i}
-                className="glass-card rounded-xl p-6 group relative overflow-hidden text-center"
-              >
-                <div className="flex items-center justify-center h-20 mb-4">
-                  {guest.icon}
-                </div>
-                <h4 className="text-white font-bold text-lg mb-2 group-hover:text-yellow-400 transition-colors duration-300">
-                  {guest.name}
-                </h4>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  {guest.designation}
-                </p>
-              </div>
-            ))}
-          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+            Our <span className="gradient-text">Guests</span>
+          </h1>
+          <div className="section-divider mb-6" aria-hidden="true" />
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            Distinguished global experts, industry leaders, and researchers joining us for IIC 2.0.
+          </p>
+        </motion.div>
+
+        {/* Grid layout */}
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch justify-items-center">
+          {guests.map((guest, i) => (
+            <GuestCard
+              key={i}
+              guest={guest}
+              delay={0.08 + i * 0.05}
+              isInView={isInView}
+            />
+          ))}
         </div>
       </main>
     </div>

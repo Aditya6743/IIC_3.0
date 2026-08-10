@@ -1,13 +1,13 @@
-import React,{useEffect} from 'react';
+import React, { useEffect } from 'react';
 import IntroWrapper from "../components/IntroWrapper.tsx";
 
 const Intro: React.FC = () => {
-    useEffect(() => {
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a1931]">
+    <div className="min-h-screen bg-transparent">
       <IntroWrapper />
     </div>
   );
