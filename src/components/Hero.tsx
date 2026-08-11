@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Pdf from '/problem_statements.pdf';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -67,7 +66,6 @@ const Hero: React.FC = () => {
       className="relative min-h-screen pt-24 pb-16 overflow-hidden flex items-center bg-transparent"
       aria-label="Hero section"
     >
-
 
       <div
         className="hero-blob-1 absolute top-1/4 right-1/4 w-72 h-72 rounded-full opacity-10 blur-3xl pointer-events-none"
@@ -134,13 +132,6 @@ const Hero: React.FC = () => {
                 }
               >
                 Submit Project
-              </Button>
-              <Button
-                variant="cyan"
-                size="lg"
-                onClick={() => window.open(Pdf, '_blank')}
-              >
-                View Problems
               </Button>
             </motion.div>
 

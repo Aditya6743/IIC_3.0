@@ -8,7 +8,6 @@ import Guests from './pages/Guests';
 import ProblemStatements from './pages/ProblemStatements';
 import Ambassador from './pages/Ambassador';
 import PageTransition from './components/PageTransition';
-import GlobalGalaxy from './components/background/GlobalGalaxy';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -80,9 +79,6 @@ function AnimatedRoutes() {
 function App() {
   return (
     <Router>
-      {/* Global Fixed Subtle Galaxy Background */}
-      <GlobalGalaxy />
-
       <div className="relative z-10">
         <AnimatedRoutes />
       </div>

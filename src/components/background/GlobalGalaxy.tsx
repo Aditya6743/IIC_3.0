@@ -193,16 +193,16 @@ export default function GlobalGalaxy({
   focal = [0.5, 0.5],
   rotation = [1.0, 0.0],
   starSpeed = 0.5,
-  density = 0.25,
+  density = 0.3, // Increased for more stars
   hueShift = 240, // Elegant blue-violet color palette matching website theme
   disableAnimation = false,
-  speed = 0.08, // Slow drifting movement
+  speed = 0.15, // Slightly faster drifting movement
   mouseInteraction = true,
-  glowIntensity = 0.15, // Soft glow
+  glowIntensity = 0.35, // Stronger glow
   saturation = 0.4,
   mouseRepulsion = true,
-  repulsionStrength = 0.35, // Mild repulsion
-  twinkleIntensity = 0.15, // Minimal twinkle
+  repulsionStrength = 1.5, // Stronger repulsion for interactivity
+  twinkleIntensity = 0.5, // More twinkle
   rotationSpeed = 0.002, // Gentle auto-rotation
   autoCenterRepulsion = 0,
   transparent = true,
@@ -423,9 +423,8 @@ export default function GlobalGalaxy({
 
     function handleMouseMove(e: MouseEvent) {
       if (!propsRef.current.mouseInteraction || propsRef.current.prefersReducedMotion) return;
-      const rect = ctn.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = 1.0 - (e.clientY - rect.top) / rect.height;
+      const x = e.clientX / window.innerWidth;
+      const y = 1.0 - (e.clientY / window.innerHeight);
       targetMousePos.current = { x, y };
       targetMouseActive.current = 1.0;
     }
@@ -434,14 +433,14 @@ export default function GlobalGalaxy({
       targetMouseActive.current = 0.0;
     }
 
-    ctn.addEventListener('mousemove', handleMouseMove);
-    ctn.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
       cancelAnimationFrame(animateId);
       window.removeEventListener('resize', resize);
-      ctn.removeEventListener('mousemove', handleMouseMove);
-      ctn.removeEventListener('mouseleave', handleMouseLeave);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseleave', handleMouseLeave);
       
       if (gl && ctn.contains(gl.canvas)) {
         ctn.removeChild(gl.canvas);
