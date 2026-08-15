@@ -6,9 +6,12 @@ import Prizes from '../components/Prizes';
 import Themes from '../components/Themes';
 import FAQ from '../components/FAQ';
 import Footer from '../components/Footer';
+import SpotlightGridBackground from '../components/background/SpotlightGridBackground';
+
 const Home: React.FC = () => {
   return (
     <div className="min-h-screen relative">
+      <SpotlightGridBackground />
       <Navbar />
       <Hero />
       <About />
