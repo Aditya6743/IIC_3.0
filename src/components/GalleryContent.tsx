@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 interface GalleryItem {
   image: string;
   text: string;
-  category: 'Day 1' | 'Day 2' | 'Workshops' | 'Ceremony' | 'Winners';
+  category: 'IIC 1.0' | 'IIC 2.0' | 'Workshops' | 'Ceremony' | 'Winners';
   caption: string;
   date: string;
   aspect: string; // e.g. "aspect-[4/3]" or "aspect-[3/4]" to prevent layout shift
@@ -15,23 +15,23 @@ interface GalleryItem {
 
 const galleryItems: GalleryItem[] = [
   { image: '/20241115_101932.jpg', text: 'Opening Session', category: 'Ceremony', caption: 'Inaugural address of IIC 2024 by university leadership.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
-  { image: '/20241115_224002.jpg', text: 'Late Night Hacking', category: 'Day 1', caption: 'Participants developing prototypes past midnight.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
+  { image: '/20241115_224002.jpg', text: 'Late Night Hacking', category: 'IIC 1.0', caption: 'Participants developing prototypes past midnight.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
   { image: '/20241115_224201.jpg', text: 'Mentor Interaction', category: 'Workshops', caption: 'Expert mentors assisting teams with engineering design.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
-  { image: '/20241116_122330.jpg', text: 'Pitch Presentation', category: 'Day 2', caption: 'Final prototype demonstration in front of panel judges.', date: 'Nov 16, 2024', aspect: 'aspect-[4/3]' },
-  { image: '/IMG_0001.jpeg', text: 'Team Brainstorming', category: 'Day 1', caption: 'Developing the initial concept and system architecture.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
+  { image: '/20241116_122330.jpg', text: 'Pitch Presentation', category: 'IIC 2.0', caption: 'Final prototype demonstration in front of panel judges.', date: 'Nov 16, 2024', aspect: 'aspect-[4/3]' },
+  { image: '/IMG_0001.jpeg', text: 'Team Brainstorming', category: 'IIC 1.0', caption: 'Developing the initial concept and system architecture.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
   { image: '/IMG_1930.JPG', text: 'Hardware Assembly', category: 'Workshops', caption: 'Integrating IoT components and microcontroller boards.', date: 'Nov 15, 2024', aspect: 'aspect-[3/4]' },
-  { image: '/IMG_2016.JPG', text: 'Colleague Coding', category: 'Day 1', caption: 'Collaborative development of the web client backend.', date: 'Nov 15, 2024', aspect: 'aspect-[3/4]' },
-  { image: '/IMG_2025.JPG', text: 'Deep Focus', category: 'Day 2', caption: 'Putting final touches on the user interface before the demo.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
-  { image: '/IMG_2028.JPG', text: 'Testing & Calibration', category: 'Day 2', caption: 'Testing and debugging sensor inputs on the test rig.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
+  { image: '/IMG_2016.JPG', text: 'Colleague Coding', category: 'IIC 1.0', caption: 'Collaborative development of the web client backend.', date: 'Nov 15, 2024', aspect: 'aspect-[3/4]' },
+  { image: '/IMG_2025.JPG', text: 'Deep Focus', category: 'IIC 2.0', caption: 'Putting final touches on the user interface before the demo.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
+  { image: '/IMG_2028.JPG', text: 'Testing & Calibration', category: 'IIC 2.0', caption: 'Testing and debugging sensor inputs on the test rig.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
   { image: '/IMG_2038.JPG', text: 'Innovation Showcase', category: 'Ceremony', caption: 'Attendees exploring interactive project stalls.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
   { image: '/IMG_2094.JPG', text: 'Closing Panel', category: 'Ceremony', caption: 'Panel discussion on the future of strategic tech.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
   { image: '/IMG_2121.JPG', text: 'Victory Celebration', category: 'Winners', caption: 'Team celebrating after securing a podium finish.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
   { image: '/IMG_20241116_015025_570.jpg', text: 'Winner Announcement', category: 'Winners', caption: 'Awarding the first prize for smart village solutions.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
-  { image: '/IMG20241115230723.jpg', text: 'Hackathon Crowd', category: 'Day 1', caption: 'Over 500 innovators gathered at the central arena.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
+  { image: '/IMG20241115230723.jpg', text: 'Hackathon Crowd', category: 'IIC 1.0', caption: 'Over 500 innovators gathered at the central arena.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
   { image: '/IMG_0004.jpeg', text: 'Team Portrait', category: 'Winners', caption: 'Group picture of the project team with their awards.', date: 'Nov 16, 2024', aspect: 'aspect-[4/3]' },
 ];
 
-const categories = ['All', 'Day 1', 'Day 2', 'Workshops', 'Ceremony', 'Winners'] as const;
+const categories = ['All', 'IIC 1.0', 'IIC 2.0', 'Workshops', 'Ceremony', 'Winners'] as const;
 
 interface GalleryCardProps {
   item: GalleryItem;

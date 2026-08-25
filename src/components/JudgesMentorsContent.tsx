@@ -99,36 +99,43 @@ const JudgesMentorsContent: React.FC = () => {
           <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
             <Users className="h-7 w-7 text-pink-400" aria-hidden="true" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Judges &amp; <span className="gradient-text">Mentors</span>
           </h1>
-          <div className="section-divider mb-6" aria-hidden="true" />
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <div className="section-divider mb-10 mx-auto" aria-hidden="true" />
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
             Industry leaders and experts guiding and evaluating your innovations.
           </p>
         </motion.div>
 
-        {/* Cards Grid */}
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch justify-items-center">
-          {judges.map((person, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.08 + i * 0.06, duration: 0.45 }}
-              className="w-full flex justify-center"
-            >
-              <SpeakerCard
-                avatar={person.avatar}
-                name={person.name}
-                designation={person.designation}
-                company={person.company}
-                role={person.role}
-                socials={person.socials}
-              />
-            </motion.div>
-          ))}
-        </div>
+        {/* Premium Coming Soon */}
+        <motion.div
+          className="flex flex-col items-center justify-center py-16 px-4"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={isInView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ delay: 0.2, duration: 0.6, type: 'spring' }}
+        >
+          <div className="relative group w-full max-w-lg mx-auto">
+            {/* Glowing background blur */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 to-cyan-400 rounded-3xl blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
+            
+            <div className="relative glass-card border border-white/10 rounded-3xl p-10 md:p-14 text-center flex flex-col items-center bg-[#05131b]/80 backdrop-blur-xl shadow-2xl">
+              <div className="p-4 rounded-full bg-white/5 border border-white/10 mb-8 shadow-[0_0_30px_rgba(236,72,153,0.15)]">
+                <Users className="w-10 h-10 text-pink-400 animate-pulse" aria-hidden="true" />
+              </div>
+              
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+                Coming <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">Soon</span>
+              </h2>
+              
+              <div className="w-16 h-1 bg-gradient-to-r from-pink-500 to-cyan-400 rounded-full mb-6 mx-auto"></div>
+              
+              <p className="text-gray-400 text-base md:text-lg leading-relaxed">
+                We are carefully selecting an elite panel of industry leaders and mentors to guide you through IIC 2.0. Stay tuned!
+              </p>
+            </div>
+          </div>
+        </motion.div>
       </main>
     </div>
   );

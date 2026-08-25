@@ -48,22 +48,7 @@ const SpotlightGridBackground: React.FC = () => {
       */}
       <div className="absolute inset-0 w-full h-full z-[2]">
         {/* 
-          The Grid overlay
-          Opacity reduced to 10% (50% less visible than before)
-        */}
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-10"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px',
-          }}
-        />
-
-        {/* 
-          Constellation Particles layered on top of the grid
+          Constellation Particles layered on top of the background
         */}
         <div className="absolute inset-0 pointer-events-auto">
           <Particles
