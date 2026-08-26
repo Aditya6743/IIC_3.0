@@ -257,7 +257,7 @@ const GuestsContent: React.FC = () => {
           </h1>
           <div className="section-divider mb-10 mx-auto" aria-hidden="true" />
           <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Distinguished global experts, industry leaders, and researchers joining us for IIC 2.0.
+            Distinguished global experts, industry leaders, and researchers joining us for IIC 3.0.
           </p>
         </motion.div>
 
@@ -284,7 +284,7 @@ const GuestsContent: React.FC = () => {
               <div className="w-16 h-1 bg-gradient-to-r from-pink-500 to-cyan-400 rounded-full mb-6 mx-auto"></div>
               
               <p className="text-gray-400 text-base md:text-lg leading-relaxed">
-                We are finalizing our list of distinguished global experts and researchers joining us for IIC 2.0.
+                We are finalizing our list of distinguished global experts and researchers joining us for IIC 3.0.
               </p>
             </div>
           </div>

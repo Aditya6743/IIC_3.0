@@ -131,7 +131,7 @@ const JudgesMentorsContent: React.FC = () => {
               <div className="w-16 h-1 bg-gradient-to-r from-pink-500 to-cyan-400 rounded-full mb-6 mx-auto"></div>
               
               <p className="text-gray-400 text-base md:text-lg leading-relaxed">
-                We are carefully selecting an elite panel of industry leaders and mentors to guide you through IIC 2.0. Stay tuned!
+                We are carefully selecting an elite panel of industry leaders and mentors to guide you through IIC 3.0. Stay tuned!
               </p>
             </div>
           </div>

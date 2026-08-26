@@ -167,7 +167,7 @@ const Footer: React.FC = () => {
         <Separator className="mb-8" />
 
         <p className="text-center text-gray-600 text-xs">
-          © 2025 IIC 2.0 — International Innovation Challenge. All rights reserved.
+          © 2025 IIC 3.0 — International Innovation Challenge. All rights reserved.
         </p>
       </div>
     </footer>

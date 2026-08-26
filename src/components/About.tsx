@@ -70,7 +70,7 @@ const About: React.FC = () => {
             id="about-heading"
             className="text-4xl md:text-5xl font-bold text-white mb-4"
           >
-            About <span className="gradient-text">IIC 2.0</span>
+            About <span className="gradient-text">IIC 3.0</span>
           </h2>
           <div className="section-divider mb-6" aria-hidden="true" />
           <p className="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
