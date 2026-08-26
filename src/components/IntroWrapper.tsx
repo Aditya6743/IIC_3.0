@@ -27,7 +27,7 @@ const IntroWrapper: React.FC = () => {
       style={{ background: 'radial-gradient(ellipse at center, #051820 0%, #030f14 100%)' }}
       onKeyDown={handleKeyDown}
       tabIndex={0}
-      aria-label="IIC 2.0 Intro Screen — Press Enter to continue"
+      aria-label="IIC 3.0 Intro Screen — Press Enter to continue"
     >
       {/* Transparent background container */}
       <div className="absolute inset-0 z-0 bg-transparent" aria-hidden="true">
@@ -79,7 +79,7 @@ const IntroWrapper: React.FC = () => {
             >
               <img
                 id="iic-intro-logo"
-                alt="IIC 2.0"
+                alt="IIC 3.0"
                 src="/iic-logo.png"
                 width="600"
                 className="max-w-[85vw]"
@@ -152,7 +152,7 @@ const IntroWrapper: React.FC = () => {
                 onClick={handleEnter}
                 className="modern-button neon-button relative px-14 py-5 rounded-lg text-lg font-bold text-white transition-all duration-500 transform hover:scale-105 active:scale-95 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
                 style={{ letterSpacing: '3px' }}
-                aria-label="Enter IIC 2.0 — Revolutionize The World"
+                aria-label="Enter IIC 3.0 — Revolutionize The World"
               >
                 {/* Shimmer */}
                 <div

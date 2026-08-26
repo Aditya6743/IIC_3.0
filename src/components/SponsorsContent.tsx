@@ -227,7 +227,7 @@ const SponsorsContent: React.FC = () => {
           </h1>
           <div className="section-divider mb-6" aria-hidden="true" />
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-            IIC 2.0 is made possible by the support of forward-thinking companies pushing the boundaries of engineering and research.
+            IIC 3.0 is made possible by the support of forward-thinking companies pushing the boundaries of engineering and research.
           </p>
         </motion.div>
 

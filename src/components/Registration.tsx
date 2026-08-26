@@ -36,7 +36,7 @@ const Registration: React.FC = () => {
             id="register-heading"
             className="text-4xl md:text-5xl font-bold text-white mb-4"
           >
-            Register for <span className="gradient-text">IIC 2.0</span>
+            Register for <span className="gradient-text">IIC 3.0</span>
           </h2>
           <div className="section-divider mb-6" aria-hidden="true" />
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
@@ -63,7 +63,7 @@ const Registration: React.FC = () => {
                   <Sparkles className="h-7 w-7 text-pink-400" aria-hidden="true" />
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold gradient-text">
-                  Why Join IIC 2.0?
+                  Why Join IIC 3.0?
                 </h3>
               </div>
 
