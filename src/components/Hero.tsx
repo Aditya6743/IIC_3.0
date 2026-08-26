@@ -101,7 +101,7 @@ const Hero: React.FC = () => {
               className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6"
             >
               <span className="gradient-text">IIC</span>{' '}
-              <span className="text-pink-400">2.0</span>
+              <span className="text-pink-400">3.0</span>
               <br />
               <span className="text-3xl md:text-4xl lg:text-5xl text-cyan-300 font-light">
                 Innovation Unleashed
@@ -141,7 +141,7 @@ const Hero: React.FC = () => {
             >
               <div className="flex items-center gap-2">
                 <Calendar size={18} className="text-pink-400 flex-shrink-0" aria-hidden="true" />
-                <span>September 8–9, 2025</span>
+                <span>September 8–9, 2026</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin size={18} className="text-cyan-400 flex-shrink-0" aria-hidden="true" />
