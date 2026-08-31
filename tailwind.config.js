@@ -140,6 +140,12 @@ export default {
           from: { opacity: '0', transform: 'scale(0.95)' },
           to: { opacity: '1', transform: 'scale(1)' },
         },
+        sweep: {
+          "0%": { transform: "translateX(-100%)" },
+          "20%": { transform: "translateX(200%)" },
+          "100%": { transform: "translateX(200%)" },
+        },
+
         'blink': {
           '0%, 50%': { opacity: '1' },
           '51%, 100%': { opacity: '0' },
@@ -154,6 +160,8 @@ export default {
         'fade-in': 'fade-in 0.6s ease-out',
         'slide-in-right': 'slide-in-right 0.5s ease-out',
         'scale-in': 'scale-in 0.3s ease-out',
+        sweep: "sweep 5s ease-in-out infinite",
+
         blink: 'blink 1s infinite',
       },
       backgroundImage: {
