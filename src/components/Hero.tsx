@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { Zap, Calendar, MapPin, Rocket, CheckCircle2 } from 'lucide-react';
-import { motion, useInView } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+
+import React, { useEffect, useRef, useState } from 'react';
+import { Calendar, MapPin, Rocket } from 'lucide-react';
+import { motion, useInView, useReducedMotion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -16,113 +16,194 @@ const staggerContainer = {
 
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
 };
 
 const Hero: React.FC = () => {
+  const [flipDegrees, setFlipDegrees] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+  const shouldReduceMotion = useReducedMotion();
+  const isFirstLoad = useRef(!sessionStorage.getItem('hasSeenPreloader')).current;
+  const baseDelay = isFirstLoad ? 2.7 : 0;
+
+  // 3D Parallax & Brightness State (Optimized with Framer Motion, no React re-renders)
+  const rawMouseX = useMotionValue(0);
+  const rawMouseY = useMotionValue(0);
+  const rawBrightness = useMotionValue(1);
+  const rawBtnX = useMotionValue(0);
+  const rawBtnY = useMotionValue(0);
+
+  // Smooth Springs for performance
+  const springConfig = { damping: 25, stiffness: 70, mass: 1 };
+  const rotateX = useSpring(rawMouseX, springConfig);
+  const rotateY = useSpring(rawMouseY, springConfig);
+  const brightness = useSpring(rawBrightness, springConfig);
+  const filter = useTransform(brightness, (b) => `brightness(${b})`);
+
+  const btnSpringX = useSpring(rawBtnX, { stiffness: 150, damping: 15, mass: 0.5 });
+  const btnSpringY = useSpring(rawBtnY, { stiffness: 150, damping: 15, mass: 0.5 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (shouldReduceMotion || !cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    // Up to 15 degrees tilt based on cursor position
+    const rotateYVal = ((x - centerX) / centerX) * 15;
+    const rotateXVal = -((y - centerY) / centerY) * 15;
+    
+    rawMouseX.set(rotateXVal || 0);
+    rawMouseY.set(rotateYVal || 0);
+
+    // Proximity brightness (max 1.25 when cursor is in the dead center)
+    const dist = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+    const maxDist = Math.max(rect.width, rect.height) / 2;
+    if (maxDist > 0) {
+      const intensity = Math.max(0, 1 - dist / maxDist);
+      rawBrightness.set(1 + intensity * 0.35);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (shouldReduceMotion) return;
+    rawMouseX.set(0);
+    rawMouseY.set(0);
+    rawBrightness.set(1);
+  };
+
+  const handleBtnMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (shouldReduceMotion || !btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const x = e.clientX - rect.left - centerX;
+    const y = e.clientY - rect.top - centerY;
+    rawBtnX.set(x * 0.2);
+    rawBtnY.set(y * 0.2);
+  };
+
+  const handleBtnLeave = () => {
+    if (shouldReduceMotion) return;
+    rawBtnX.set(0);
+    rawBtnY.set(0);
+  };
 
   useEffect(() => {
-    // GSAP subtle parallax on the decorative blobs
+    if (shouldReduceMotion) return;
+    // GSAP subtle parallax on the background for depth
     const ctx = gsap.context(() => {
-      gsap.to('.hero-blob-1', {
-        y: -50,
-        x: 20,
+      gsap.to('.hero-bg-layer', {
+        y: 100,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
           end: 'bottom top',
-          scrub: 1.5,
-        },
-      });
-      gsap.to('.hero-blob-2', {
-        y: -30,
-        x: -20,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 2,
+          scrub: 1,
         },
       });
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
-
-  const highlights = [
-    'Open to all innovators',
-    '₹7L+ in goodies and prizes',
-    'Expert mentorship',
-    'Global networking opportunities',
-  ];
+  }, [shouldReduceMotion]);
 
   return (
     <section
       id="hero"
       ref={sectionRef}
-      className="relative min-h-screen pt-24 pb-16 overflow-hidden flex items-center bg-transparent"
+      className="relative min-h-screen pt-32 pb-16 overflow-hidden flex items-center bg-transparent"
       aria-label="Hero section"
     >
+      {/* Subtle Background Depth Layer */}
+      <div className="hero-bg-layer absolute inset-0 opacity-20 pointer-events-none z-0">
+        <div className="absolute top-[20%] left-[10%] w-[500px] h-[500px] bg-cyan-900/30 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] bg-emerald-900/20 rounded-full blur-[150px]" />
+      </div>
 
-      <div
-        className="hero-blob-1 absolute top-1/4 right-1/4 w-72 h-72 rounded-full opacity-10 blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #6ee7b7 0%, transparent 70%)' }}
-        aria-hidden="true"
-      />
-      <div
-        className="hero-blob-2 absolute bottom-1/4 left-1/4 w-56 h-56 rounded-full opacity-10 blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #14b8a6 0%, transparent 70%)' }}
-        aria-hidden="true"
-      />
+      <div className="container mx-auto px-6 lg:px-8 relative z-10">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
 
-
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
-
-          {/* Left — Content */}
+          {/* Left — Typography & Content (approx 45% width) */}
           <motion.div
-            className="max-w-2xl w-full"
+            className="w-full lg:w-[45%] z-20 flex-shrink-0"
             variants={staggerContainer}
             initial="initial"
             animate={isInView ? 'animate' : 'initial'}
           >
             <motion.div variants={fadeUp}>
-              <Badge variant="default" className="px-4 py-1.5 text-sm mb-6 inline-flex">
-                <Rocket size={14} className="mr-1.5 text-pink-400" aria-hidden="true" />
-                <span className="gradient-text font-semibold">Submissions started!</span>
+              <Badge variant="outline" className="px-5 py-2 text-sm mb-8 inline-flex bg-cyan-950/30 border-cyan-500/30 backdrop-blur-md">
+                <Rocket size={14} className="mr-2 text-cyan-400" aria-hidden="true" />
+                <span className="text-cyan-100 tracking-wide font-medium">Submissions are now open</span>
               </Badge>
             </motion.div>
 
-            <motion.h1
-              variants={fadeUp}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6"
-            >
-              <span className="gradient-text">IIC</span>{' '}
-              <span className="text-pink-400">3.0</span>
-              <br />
-              <span className="text-3xl md:text-4xl lg:text-5xl text-cyan-300 font-light">
+            <h1 className="text-6xl md:text-7xl lg:text-7xl xl:text-8xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight flex flex-col">
+              <div className="flex items-center">
+                {/* Letter by Letter IIC */}
+                {['I', 'I', 'C'].map((letter, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, x: -30, filter: 'blur(10px)' }}
+                    animate={isInView ? { opacity: 1, x: 0, filter: 'blur(0px)' } : {}}
+                    transition={{ delay: baseDelay + 0.1 + i * 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="inline-block"
+                  >
+                    {letter}
+                  </motion.span>
+                ))}
+                
+                {/* 3.0 follows immediately after */}
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                  transition={{ delay: baseDelay + 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400 ml-4"
+                >
+                  3.0
+                </motion.span>
+              </div>
+
+              {/* Innovation Unleashed follows */}
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: baseDelay + 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 font-light tracking-tight mt-3 block"
+              >
                 Innovation Unleashed
-              </span>
-            </motion.h1>
+              </motion.span>
+            </h1>
 
             <motion.p
-              variants={fadeUp}
-              className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed max-w-xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: baseDelay + 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-lg md:text-xl text-gray-400 mb-10 leading-relaxed max-w-lg font-light"
             >
               We're back with bigger impact and bolder innovation. Join the most
-              anticipated hackathon of 2025 where dreams become reality.
+              anticipated technology conference and hackathon of 2026.
             </motion.p>
 
-            <motion.div
-              variants={fadeUp}
-              className="flex flex-col sm:flex-row gap-4 mb-10"
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: baseDelay + 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="mb-12"
             >
-              <Button
-                variant="neon"
-                size="lg"
+              <motion.button
+                ref={btnRef}
+                onMouseMove={handleBtnMove}
+                onMouseLeave={handleBtnLeave}
+                style={{ x: btnSpringX, y: btnSpringY }}
+                className="relative px-8 py-4 bg-cyan-500 text-cyan-950 font-bold uppercase tracking-wider text-sm rounded-full overflow-hidden group shadow-[0_0_20px_rgba(34,211,238,0.2)] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)]"
                 onClick={() =>
                   window.open(
                     'https://docs.google.com/forms/d/1r6umjVOO-wcnGa-XwrCkjcvPk2f8rcAo1msmgnfnCz0/edit',
@@ -131,80 +212,85 @@ const Hero: React.FC = () => {
                   )
                 }
               >
-                Submit Project
-              </Button>
+                {/* Highlight Sweep */}
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-sweep" />
+                <span className="relative z-10">Submit Project</span>
+              </motion.button>
             </motion.div>
 
             <motion.div
-              variants={fadeUp}
-              className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 text-gray-400"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: baseDelay + 0.6, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-10 text-gray-500 text-sm tracking-wide uppercase font-medium"
             >
-              <div className="flex items-center gap-2">
-                <Calendar size={18} className="text-pink-400 flex-shrink-0" aria-hidden="true" />
-                <span>September 8–9, 2026</span>
+              <div className="flex items-center gap-3">
+                <Calendar size={18} className="text-cyan-400 flex-shrink-0" aria-hidden="true" />
+                <span>Sep 8–9, 2026</span>
               </div>
-              <div className="flex items-center gap-2">
-                <MapPin size={18} className="text-cyan-400 flex-shrink-0" aria-hidden="true" />
-                <span>Manipal University Jaipur</span>
+              <div className="flex items-center gap-3">
+                <MapPin size={18} className="text-emerald-400 flex-shrink-0" aria-hidden="true" />
+                <span>MUJ Campus</span>
               </div>
             </motion.div>
           </motion.div>
 
-          {/* Right — Highlights Card */}
+          {/* Right — Hero 3D Graphic Rehaul (Epic Cinematic Orbital Construct) */}
           <motion.div
             ref={cardRef}
-            className="relative w-full max-w-sm lg:max-w-md"
-            initial={{ opacity: 0, x: 40 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="w-full lg:w-[55%] relative flex justify-end items-center lg:-translate-y-8 lg:translate-x-8 xl:translate-x-12 pointer-events-auto"
+            style={{ perspective: 1500 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 1.2, delay: baseDelay + 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Decorative glow blobs behind card */}
-            <div
-              className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full opacity-20 blur-2xl"
-              aria-hidden="true"
-            />
-            <div
-              className="absolute -bottom-4 -left-4 w-36 h-36 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full opacity-20 blur-2xl"
-              aria-hidden="true"
-            />
-
-            <div className="relative z-10 glass-card p-8 rounded-2xl">
-              {/* Card Header */}
-              <div className="text-center mb-7">
-                <div className="inline-block p-4 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-4">
-                  <Zap className="h-8 w-8 text-pink-400" aria-hidden="true" />
-                </div>
-                <h2 className="gradient-text text-2xl font-bold mb-1">Get Ready!</h2>
-                <p className="text-gray-400 text-sm">The future starts here</p>
-              </div>
-
-              {/* Highlights List */}
-              <ul className="space-y-3 mb-6" aria-label="Event highlights">
-                {highlights.map((item, index) => (
-                  <motion.li
-                    key={index}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
-                    className="flex items-center gap-3 text-gray-300"
-                  >
-                    <CheckCircle2
-                      size={16}
-                      className="text-pink-400 flex-shrink-0"
-                      aria-hidden="true"
-                    />
-                    <span className="text-sm">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-
-              {/* Quote footer */}
-              <div className="mt-2 p-4 glass-surface rounded-xl border border-pink-500/20">
-                <p className="text-pink-300 text-center text-sm font-medium italic">
-                  "Where Innovation Meets Opportunity"
-                </p>
-              </div>
-            </div>
+            <motion.div 
+              className="relative w-full max-w-[550px] xl:max-w-[650px] aspect-square flex justify-center items-center mx-auto lg:mr-0 transition-all duration-200 ease-out"
+              style={{ rotateX, rotateY, transformStyle: 'preserve-3d', filter }}
+            >
+              {/* Entrance Spin Wrapper */}
+              <motion.div
+                className="relative z-10 w-full"
+                initial={{ opacity: 0 }}
+                animate={isInView ? { 
+                  opacity: 1, 
+                  rotateY: [-360, 0], // Explicit keyframes force a full 360 revolution
+                  rotateX: [30, 0] 
+                } : {}}
+                transition={{ delay: baseDelay + 0.2, duration: 1.8, ease: [0.16, 1, 0.3, 1] }} // Premium Expo-Out curve guarantees rotation completes smoothly
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                {/* Interactive Flip Wrapper */}
+                <motion.div
+                  animate={{ rotateY: flipDegrees }}
+                  transition={{ duration: 1.2, type: "spring", stiffness: 60, damping: 15 }}
+                  onDoubleClick={() => setFlipDegrees(prev => prev + 360)}
+                  style={{ transformStyle: 'preserve-3d' }}
+                >
+                  {/* Continuous Float Animation */}
+                  <motion.img
+                    src="/hero-iic.png"
+                    alt="IIC 3.0 3D Logo"
+                    className="w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(34,211,238,0.3)]"
+                    animate={{ y: [0, -15, 0] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                    style={{ transform: 'translateZ(60px)' }}
+                  />
+                </motion.div>
+              </motion.div>
+            </motion.div>
+            
+            {/* Custom Animations */}
+            <style>
+              {`
+                @keyframes sweep {
+                  0% { transform: translateX(-100%) skewX(-15deg); }
+                  100% { transform: translateX(200%) skewX(-15deg); }
+                }
+              `}
+            </style>
           </motion.div>
         </div>
       </div>

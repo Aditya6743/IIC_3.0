@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 60);
+      setIsScrolled(window.scrollY > 40);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -55,52 +55,54 @@ const Navbar: React.FC = () => {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
         isScrolled
-          ? 'py-2 glass-surface border-b border-pink-500/20 shadow-glass'
-          : 'py-4 bg-transparent'
+          ? 'py-3 bg-[#02080b]/70 backdrop-blur-lg border-b border-white/5'
+          : 'py-5 bg-transparent'
       )}
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="container mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center">
 
           {/* Logo Section */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-4">
             <Link
               to="/"
-              className="flex items-center space-x-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 rounded"
+              className="flex items-center space-x-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded"
               aria-label="IIC Home"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               <img
                 alt="MUJ Logo"
                 src="/muj-logo.png"
                 width="120"
-                className="transition-opacity duration-300 hover:opacity-90"
+                className="transition-opacity duration-300 hover:opacity-90 grayscale brightness-200 contrast-125 opacity-80 hover:opacity-100"
               />
             </Link>
 
-            {/* Gradient Separator */}
+            {/* Subtle Separator */}
             <div
-              className="w-px h-7 bg-gradient-to-b from-pink-400 to-cyan-400 opacity-50"
+              className="w-px h-6 bg-white/10"
               aria-hidden="true"
             />
 
             <Link
               to="/"
-              className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 rounded"
+              className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded"
               aria-label="IIC Home"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               <img
-                alt="IIC Logo"
-                src="/iic-logo.png"
-                width="90"
-                className="transition-opacity duration-300 hover:opacity-90"
+                alt="IIC 3.0 Logo"
+                src="/iic-3.0-logo.png"
+                width="130"
+                className="transition-all duration-300 hover:opacity-90 drop-shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:drop-shadow-[0_0_20px_rgba(34,211,238,0.6)]"
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center space-x-2">
             {navItems.map((item) => {
               const isActive =
                 item.path.startsWith(location.pathname) && location.pathname !== '/';
@@ -109,16 +111,16 @@ const Navbar: React.FC = () => {
                   key={item.name}
                   onClick={() => handleNavClick(item.path)}
                   className={cn(
-                    'relative px-3 py-2 text-sm font-medium transition-all duration-300 rounded-md group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400',
-                    isActive ? 'text-pink-400' : 'text-gray-300 hover:text-white'
+                    'relative px-3 py-2 text-sm transition-all duration-300 rounded-md group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 font-medium tracking-wide',
+                    isActive ? 'text-cyan-400' : 'text-gray-400 hover:text-white'
                   )}
                   aria-current={isActive ? 'page' : undefined}
                 >
                   {item.name}
                   <span
                     className={cn(
-                      'absolute -bottom-0.5 left-0 h-0.5 bg-gradient-to-r from-pink-400 to-cyan-400 transition-all duration-300 rounded-full',
-                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                      'absolute -bottom-0 left-2 right-2 h-px bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-300',
+                      isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0'
                     )}
                     aria-hidden="true"
                   />
@@ -126,31 +128,28 @@ const Navbar: React.FC = () => {
               );
             })}
 
-            <div className="ml-3">
-              <Button
-                variant="neon"
-                size="sm"
+            <div className="ml-4">
+              <button
+                className="px-5 py-2 text-sm font-semibold tracking-wide text-cyan-950 bg-cyan-400 rounded-full hover:bg-cyan-300 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-[#02080b]"
                 onClick={() =>
                   window.open(
-                    'https://unstop.com/hackathons/international-innovation-challenge-20-manipal-university-mu-jaipur-1527559',
+                    'https://docs.google.com/forms/d/1r6umjVOO-wcnGa-XwrCkjcvPk2f8rcAo1msmgnfnCz0/edit',
                     '_blank',
                     'noopener,noreferrer'
                   )
                 }
               >
-                <Zap size={15} aria-hidden="true" />
-                Submit
-              </Button>
+                Submit Project
+              </button>
             </div>
           </div>
 
           {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden text-white p-2 glass-surface rounded-lg border border-pink-500/20 hover:border-pink-400/50 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400"
+            className="md:hidden text-gray-300 p-2 hover:bg-white/5 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isMenuOpen}
-            aria-controls="mobile-menu"
           >
             <AnimatePresence mode="wait" initial={false}>
               {isMenuOpen ? (
@@ -161,7 +160,7 @@ const Navbar: React.FC = () => {
                   exit={{ rotate: 90, opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <X size={22} />
+                  <X size={24} />
                 </motion.div>
               ) : (
                 <motion.div
@@ -171,7 +170,7 @@ const Navbar: React.FC = () => {
                   exit={{ rotate: -90, opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <Menu size={22} />
+                  <Menu size={24} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -184,23 +183,23 @@ const Navbar: React.FC = () => {
             <motion.div
               id="mobile-menu"
               key="mobile-menu"
-              initial={{ opacity: 0, height: 0, y: -10 }}
-              animate={{ opacity: 1, height: 'auto', y: 0 }}
-              exit={{ opacity: 0, height: 0, y: -10 }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              className="md:hidden overflow-hidden mt-3"
+              className="md:hidden overflow-hidden mt-4"
             >
-              <div className="glass-surface rounded-xl border border-pink-500/20 p-3 space-y-1">
+              <div className="bg-[#031015]/90 backdrop-blur-xl rounded-2xl border border-white/5 p-4 space-y-1 shadow-2xl">
                 {navItems.map((item, idx) => (
                   <motion.div
                     key={item.name}
-                    initial={{ opacity: 0, x: -12 }}
+                    initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.05, duration: 0.25 }}
+                    transition={{ delay: idx * 0.05, duration: 0.2 }}
                   >
                     <button
                       onClick={() => handleNavClick(item.path)}
-                      className="block w-full text-left px-4 py-3 text-gray-300 hover:text-white hover:bg-pink-500/10 rounded-lg transition-all duration-200 font-medium text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400"
+                      className="block w-full text-left px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors font-medium text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                     >
                       {item.name}
                     </button>
@@ -208,26 +207,23 @@ const Navbar: React.FC = () => {
                 ))}
 
                 <motion.div
-                  initial={{ opacity: 0, x: -12 }}
+                  initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: navItems.length * 0.05, duration: 0.25 }}
-                  className="pt-2 px-1"
+                  transition={{ delay: navItems.length * 0.05, duration: 0.2 }}
+                  className="pt-4 pb-2"
                 >
-                  <Button
-                    variant="neon"
-                    size="default"
-                    className="w-full"
+                  <button
+                    className="w-full px-5 py-3 text-sm font-semibold tracking-wide text-cyan-950 bg-cyan-400 rounded-xl hover:bg-cyan-300 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     onClick={() =>
                       window.open(
-                        'https://unstop.com/hackathons/international-innovation-challenge-20-manipal-university-mu-jaipur-1527559',
+                        'https://docs.google.com/forms/d/1r6umjVOO-wcnGa-XwrCkjcvPk2f8rcAo1msmgnfnCz0/edit',
                         '_blank',
                         'noopener,noreferrer'
                       )
                     }
                   >
-                    <Zap size={16} aria-hidden="true" />
                     Submit Project
-                  </Button>
+                  </button>
                 </motion.div>
               </div>
             </motion.div>
