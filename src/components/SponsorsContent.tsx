@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { Building, ExternalLink, ShieldCheck, Trophy, Sparkles } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const Pdf = '/IIC_DECK.pdf';
+// const Pdf = '/IIC_DECK.pdf';
 
 interface Sponsor {
   logo: string;
@@ -17,7 +17,7 @@ interface Sponsor {
 
 const coPoweredBy: Sponsor[] = [
   {
-    logo: '/unstop.png',
+    logo: '/sponsors/unstop.png',
     name: 'Unstop',
     industry: 'Talent & EdTech Platform',
     website: 'https://unstop.com',
@@ -28,31 +28,39 @@ const coPoweredBy: Sponsor[] = [
 
 const goldSponsors: Sponsor[] = [
   {
-    logo: '/geeksforgeeks.png',
-    name: 'GeeksforGeeks',
-    industry: 'Online Learning Platform',
-    website: 'https://geeksforgeeks.org',
-    description: 'A leading portal for computer science questions, courses, and coding tutorials.',
+    logo: '/sponsors/MongoDB_SpringGreen.png',
+    name: 'MongoDB',
+    industry: 'Database & Cloud Services',
+    website: 'https://www.mongodb.com',
+    description: 'Leading NoSQL database platform providing flexible, scalable data storage for modern applications.',
     tier: 'Gold Sponsor',
   },
   {
-    logo: '/tuf.png',
-    name: 'TUF',
-    industry: 'Educational Training',
-    website: 'https://theuniqueacademy.com',
-    description: 'Coaching and training institute preparing candidates for elite public services.',
+    logo: '/sponsors/Lockup-Horizontal-Dark.svg',
+    name: 'Codecrafters',
+    industry: 'Educational Technology',
+    website: 'https://codecrafters.io',
+    description: 'Interactive coding challenge platform teaching backend engineering through building real systems.',
     tier: 'Gold Sponsor',
   },
   {
-    logo: '/mlhealth360.jpeg',
-    name: 'mlHealth360',
-    industry: 'Healthcare Technology',
-    website: 'https://mlhealth360.com',
-    description: 'AI-powered clinical intelligence platform for healthcare operational scaling.',
+    logo: '/sponsors/interviewbuddy-white.png',
+    name: 'Interview Buddy',
+    industry: 'Interview Preparation Platform',
+    website: 'https://interviewbuddy.com',
+    description: 'AI-powered platform helping candidates prepare for technical and HR interviews with confidence.',
     tier: 'Technology Partner',
   },
   {
-    logo: '/doic.png',
+    logo: '/sponsors/Internshala logo.png',
+    name: 'Internshala',
+    industry: 'Internship & Training Platform',
+    website: 'https://internshala.com',
+    description: 'India\'s leading platform connecting students with internships, work-from-home jobs, and courses.',
+    tier: 'Technology Partner',
+  },
+  {
+    logo: '/sponsors/doic.png',
     name: 'DoIC MUJ',
     industry: 'Academic Innovation Dept',
     website: 'https://jaipur.manipal.edu',
@@ -60,7 +68,7 @@ const goldSponsors: Sponsor[] = [
     tier: 'Academic Partner',
   },
   {
-    logo: '/eCell.jpeg',
+    logo: '/sponsors/eCell.jpeg',
     name: 'E-Cell MUJ',
     industry: 'Entrepreneurship Hub',
     website: 'https://ecellmuj.in',
@@ -68,7 +76,7 @@ const goldSponsors: Sponsor[] = [
     tier: 'Community Partner',
   },
   {
-    logo: '/aic.jpeg',
+    logo: '/sponsors/aic.jpeg',
     name: 'AIC MUJ',
     industry: 'Atal Incubation Centre',
     website: 'https://aicmuj.in',
@@ -79,7 +87,7 @@ const goldSponsors: Sponsor[] = [
 
 const problemPartners: Sponsor[] = [
   {
-    logo: '/isro.jpg',
+    logo: '/sponsors/isro.jpg',
     name: 'ISRO',
     industry: 'Space Exploration Agency',
     website: 'https://isro.gov.in',
@@ -87,7 +95,7 @@ const problemPartners: Sponsor[] = [
     tier: 'Problem Partner',
   },
   {
-    logo: '/mahindra.avif',
+    logo: '/sponsors/mahindra.avif',
     name: 'Mahindra',
     industry: 'Automotive & Mobility',
     website: 'https://mahindra.com',
@@ -95,31 +103,7 @@ const problemPartners: Sponsor[] = [
     tier: 'Problem Partner',
   },
   {
-    logo: '/talsmart.jpg',
-    name: 'Talsmart',
-    industry: 'Corporate Talent Services',
-    website: 'https://talsmart.com',
-    description: 'B2B platform optimizing hiring, upskilling, and tech team performance metrics.',
-    tier: 'Problem Partner',
-  },
-  {
-    logo: '/epam.webp',
-    name: 'EPAM',
-    industry: 'Software Engineering Services',
-    website: 'https://epam.com',
-    description: 'Providing digital platform engineering and product design consulting services.',
-    tier: 'Problem Partner',
-  },
-  {
-    logo: '/rgHospitals.jpeg',
-    name: 'RG Hospitals',
-    industry: 'Healthcare Services',
-    website: 'https://rghospitals.com',
-    description: 'Leading multi-specialty healthcare institution offering state-of-the-art diagnostics.',
-    tier: 'Problem Partner',
-  },
-  {
-    logo: '/drdo.png',
+    logo: '/sponsors/drdo.png',
     name: 'DRDO',
     industry: 'Defense Technology R&D',
     website: 'https://drdo.gov.in',
@@ -219,9 +203,9 @@ const SponsorsContent: React.FC = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
+          {/* <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
             <Building className="h-7 w-7 text-pink-400" aria-hidden="true" />
-          </div>
+          </div> */}
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Our <span className="gradient-text">Sponsors</span>
           </h1>
@@ -270,7 +254,7 @@ const SponsorsContent: React.FC = () => {
           >
             <Sparkles className="h-5 w-5 text-cyan-400" aria-hidden="true" />
             <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white">
-              Gold Sponsors &amp; Partners
+               Sponsors &amp; Partners
             </h2>
           </motion.div>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch justify-items-center">
@@ -311,7 +295,7 @@ const SponsorsContent: React.FC = () => {
         </div>
 
         {/* ── Become a Sponsor CTA ───────────────────────────────────────────── */}
-        <motion.div
+        {/* <motion.div
           className="mt-24 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -330,7 +314,7 @@ const SponsorsContent: React.FC = () => {
               Download Brochure
             </Button>
           </div>
-        </motion.div>
+        </motion.div> */}
       </main>
     </div>
   );
