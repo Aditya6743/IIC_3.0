@@ -87,12 +87,12 @@ const goldSponsors: Sponsor[] = [
 
 const problemPartners: Sponsor[] = [
   {
-    logo: '/sponsors/isro.jpg',
-    name: 'ISRO',
-    industry: 'Space Exploration Agency',
-    website: 'https://isro.gov.in',
-    description: 'Indian Space Research Organisation promoting space science and satellite technology.',
-    tier: 'Problem Partner',
+    logo: '/sponsors/mlhealth360.jpeg',
+    name: 'mlHealth360',
+    industry: 'Healthcare Technology',
+    website: 'https://mlhealth360.com',
+    description: 'AI-powered clinical intelligence platform for healthcare operational scaling.',
+    tier: 'Technology Partner',
   },
   {
     logo: '/sponsors/mahindra.avif',
@@ -103,11 +103,11 @@ const problemPartners: Sponsor[] = [
     tier: 'Problem Partner',
   },
   {
-    logo: '/sponsors/drdo.png',
-    name: 'DRDO',
-    industry: 'Defense Technology R&D',
-    website: 'https://drdo.gov.in',
-    description: 'Defence Research and Development Organisation designing military tech solutions.',
+    logo: '/sponsors/Group 1.png',
+    name: 'HCLTech',
+    industry: 'Information Technology & Consulting',
+    website: 'https://www.hcltech.com',
+    description: 'Global technology company delivering digital, engineering, cloud, AI, and software services.',
     tier: 'Problem Partner',
   },
 ];

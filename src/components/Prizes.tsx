@@ -10,19 +10,10 @@ const fadeUp = {
 
 const prizes = [
   {
-    position: '2nd Place',
-    icon: <Trophy className="h-12 w-12 text-gray-300" aria-hidden="true" />,
-    prize: '₹50,000',
-    gradient: 'from-gray-300 via-gray-400 to-gray-500',
-    glow: 'rgba(180, 180, 180, 0.15)',
-    borderColor: 'border-gray-400/30 group-hover:border-gray-400/60',
-    order: 'order-2 lg:order-1',
-    scale: 'lg:scale-95',
-  },
-  {
-    position: '1st Place',
+    position: 'Winner',
     icon: <Crown className="h-14 w-14 text-yellow-400" aria-hidden="true" />,
-    prize: '₹75,000',
+    prize: '₹1,00,000',
+    description: '1 Lakh cash prize',
     gradient: 'from-yellow-400 via-orange-500 to-red-500',
     glow: 'rgba(255, 165, 0, 0.15)',
     borderColor: 'border-yellow-400/40 group-hover:border-yellow-400/70',
@@ -31,13 +22,36 @@ const prizes = [
     featured: true,
   },
   {
-    position: '3rd Place',
+    position: '1st Runner Up',
+    icon: <Trophy className="h-12 w-12 text-gray-300" aria-hidden="true" />,
+    prize: '₹75,000',
+    description: '75K cash prize',
+    gradient: 'from-gray-300 via-gray-400 to-gray-500',
+    glow: 'rgba(180, 180, 180, 0.15)',
+    borderColor: 'border-gray-400/30 group-hover:border-gray-400/60',
+    order: 'order-2 lg:order-1',
+    scale: 'lg:scale-95',
+  },
+  {
+    position: '2nd Runner Up',
     icon: <Award className="h-12 w-12 text-amber-600" aria-hidden="true" />,
-    prize: '₹25,000',
+    prize: '₹50,000',
+    description: '50K cash prize',
     gradient: 'from-amber-600 via-amber-700 to-amber-800',
     glow: 'rgba(180, 80, 0, 0.15)',
     borderColor: 'border-amber-600/30 group-hover:border-amber-600/60',
     order: 'order-3 lg:order-3',
+    scale: 'lg:scale-95',
+  },
+  {
+    position: 'Paid Internship, Rewards and Other Benefits',
+    icon: <Zap className="h-12 w-12 text-cyan-300" aria-hidden="true" />,
+    prize: '₹4,75,000',
+    description: 'Goodies, hampers, courses, paid internship and incubation opportunity, recommendation certificate, etc.',
+    gradient: 'from-cyan-400 via-teal-500 to-emerald-500',
+    glow: 'rgba(45, 212, 191, 0.15)',
+    borderColor: 'border-cyan-400/30 group-hover:border-cyan-400/60',
+    order: 'order-4 lg:order-4 md:col-span-3',
     scale: 'lg:scale-95',
   },
 ];
@@ -69,17 +83,17 @@ const Prizes: React.FC = () => {
             id="prizes-heading"
             className="text-4xl md:text-5xl font-bold text-white mb-4"
           >
-            Prizes &amp; <span className="gradient-text">Rewards</span>
+            Rewards <span className="gradient-text">and Prizes</span>
           </h2>
           <div className="section-divider mb-6" aria-hidden="true" />
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-            ₹7L+ in cash prizes, plus invaluable opportunities, mentorship, and
+            ₹7 Lakh+ prize pool, plus invaluable opportunities, mentorship, and
             resources for winners.
           </p>
         </motion.div>
 
         {/* Prize Podium */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto items-end">
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-end">
           {prizes.map((prize, index) => (
             <motion.div
               key={index}
@@ -118,6 +132,9 @@ const Prizes: React.FC = () => {
                   <div className="text-5xl font-bold gradient-text mb-2">
                     {prize.prize}
                   </div>
+                  <p className="text-sm text-gray-400 capitalize">
+                    {prize.description}
+                  </p>
                 </CardContent>
               </Card>
             </motion.div>
