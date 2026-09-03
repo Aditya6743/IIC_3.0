@@ -35,7 +35,7 @@ const AmbassadorContent: React.FC = () => {
 
   return (
     <div className="min-h-screen space-bg">
-      <main className="container mx-auto px-4 py-20" ref={sectionRef}>
+      <main className="container mx-auto px-4 pt-32 pb-20" ref={sectionRef}>
 
         {/* Header */}
         <motion.div
@@ -44,9 +44,6 @@ const AmbassadorContent: React.FC = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
-            <Users className="h-7 w-7 text-pink-400" aria-hidden="true" />
-          </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Join the <span className="gradient-text">Movement</span>
           </h1>
