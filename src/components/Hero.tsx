@@ -139,12 +139,12 @@ const Hero: React.FC = () => {
             initial="initial"
             animate={isInView ? 'animate' : 'initial'}
           >
-            <motion.div variants={fadeUp}>
+            {/* <motion.div variants={fadeUp}>
               <Badge variant="outline" className="px-5 py-2 text-sm mb-8 inline-flex bg-cyan-950/30 border-cyan-500/30 backdrop-blur-md">
                 <Rocket size={14} className="mr-2 text-cyan-400" aria-hidden="true" />
                 <span className="text-cyan-100 tracking-wide font-medium">Submissions are now open</span>
               </Badge>
-            </motion.div>
+            </motion.div> */}
 
             <h1 className="text-6xl md:text-7xl lg:text-7xl xl:text-8xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight flex flex-col">
               <div className="flex items-center">
@@ -208,7 +208,7 @@ const Hero: React.FC = () => {
                 className="relative px-10 py-5 bg-cyan-400 text-cyan-950 font-black uppercase tracking-widest text-sm rounded-full overflow-hidden group shadow-[0_0_30px_rgba(34,211,238,0.3)] hover:shadow-[0_0_50px_rgba(34,211,238,0.6)] transition-shadow duration-300 border border-cyan-300/50"
                 onClick={() =>
                   window.open(
-                    'https://docs.google.com/forms/d/1r6umjVOO-wcnGa-XwrCkjcvPk2f8rcAo1msmgnfnCz0/edit',
+                    'https://forms.gle/5g6k1Z7Q8v9x1Y2F9',
                     '_blank',
                     'noopener,noreferrer'
                   )
