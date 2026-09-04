@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Building, ExternalLink, ShieldCheck, Trophy, Sparkles } from 'lucide-react';
+import { ExternalLink, ShieldCheck, Trophy, Sparkles } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
 // import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -14,17 +14,6 @@ interface Sponsor {
   description: string;
   tier: string;
 }
-
-const supportedBy: Sponsor[] = [
-  {
-    logo: '/doa-rajasthan-dark.png',
-    name: 'Department of Agriculture',
-    industry: 'Government of Rajasthan',
-    website: 'https://agriculture.rajasthan.gov.in/',
-    description: 'Empowering innovation in agriculture and agritech to solve real-world farming challenges.',
-    tier: 'Supported By',
-  },
-];
 
 const coPoweredBy: Sponsor[] = [
   {
@@ -71,6 +60,14 @@ const goldSponsors: Sponsor[] = [
     tier: 'Technology Partner',
   },
   {
+    logo: '/sponsors/doa-rajasthan-dark.png',
+    name: 'Department of Agriculture',
+    industry: 'Government of Rajasthan',
+    website: 'https://agriculture.rajasthan.gov.in/',
+    description: 'Empowering innovation in agriculture and agritech to solve real-world farming challenges.',
+    tier: 'Government Partner',
+  },
+  {
     logo: '/sponsors/doic.png',
     name: 'DoIC MUJ',
     industry: 'Academic Innovation Dept',
@@ -114,6 +111,14 @@ const problemPartners: Sponsor[] = [
     tier: 'Problem Partner',
   },
   {
+    logo: '/sponsors/doa-rajasthan-dark.png',
+    name: 'Department of Agriculture',
+    industry: 'Government of Rajasthan',
+    website: 'https://agriculture.rajasthan.gov.in/',
+    description: 'Empowering innovation in agriculture and agritech to solve real-world farming challenges.',
+    tier: 'Problem Partner',
+  },
+  {
     logo: '/sponsors/Group 1.png',
     name: 'HCLTech',
     industry: 'Information Technology & Consulting',
@@ -121,6 +126,14 @@ const problemPartners: Sponsor[] = [
     description: 'Global technology company delivering digital, engineering, cloud, AI, and software services.',
     tier: 'Problem Partner',
   },
+  {
+    logo: '/sponsors/icar-logo-png_seeklogo-158112.png',
+    name: 'Indian Council of Agricultural Research (ICAR)',
+    industry: 'Engineering & Product Development',  
+    website: 'https://icar.org.in/',
+    description: 'National research institution for agricultural sciences and technology.',
+    tier: 'Problem Partner',
+  }
 ];
 
 const SponsorShowcaseCard: React.FC<{ sponsor: Sponsor; delay: number; isInView: boolean }> = ({
@@ -223,36 +236,6 @@ const SponsorsContent: React.FC = () => {
             IIC 3.0 is made possible by the support of forward-thinking companies pushing the boundaries of engineering and research.
           </p>
         </motion.div>
-
-                {/* ── Supported By Tier ─────────────────────────────────────────────── */}
-        {supportedBy.length > 0 && (
-          <div className="mb-20">
-            <motion.div
-              className="text-center mb-8 flex items-center justify-center gap-3"
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.1 }}
-            >
-              <ShieldCheck className="h-5 w-5 text-emerald-400" aria-hidden="true" />
-              <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white">
-                Supported By
-              </h2>
-            </motion.div>
-            
-            <div className="flex justify-center">
-              <div className="max-w-md w-full">
-                {supportedBy.map((s, i) => (
-                  <SponsorShowcaseCard
-                    key={i}
-                    sponsor={s}
-                    delay={0.2}
-                    isInView={isInView}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* ── Co-Powered By Tier ─────────────────────────────────────────────── */}
         {coPoweredBy.length > 0 && (
