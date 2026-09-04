@@ -13,7 +13,6 @@ import Ambassador from './pages/Ambassador';
 import PageTransition from './components/PageTransition';
 import Preloader from './components/Preloader';
 import MatrixEasterEgg from './components/MatrixEasterEgg';
-import AudioProvider from './components/AudioProvider';
 import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
 import SmoothScroll from './components/SmoothScroll';
@@ -52,7 +51,6 @@ function App() {
 
   return (
     <Router>
-      <AudioProvider />
       <CustomCursor />
       
       <div className="relative z-10 bg-black min-h-screen select-none">
