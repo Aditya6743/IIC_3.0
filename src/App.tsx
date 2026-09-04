@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { Analytics } from '@vercel/analytics/react';
 import Home from './pages/Home';
 import About from './pages/About';
 import Sponsors from './pages/Sponsors';
@@ -51,6 +52,7 @@ function App() {
 
   return (
     <Router>
+      <Analytics />
       <CustomCursor />
       
       <div className="relative z-10 bg-black min-h-screen select-none">
