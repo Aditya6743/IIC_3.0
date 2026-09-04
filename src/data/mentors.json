@@ -1,0 +1,42 @@
+[
+  {
+    "id": "prince-yadav",
+    "name": "Prince Yadav",
+    "title": "SDE2 @ GreyOrange",
+    "headline": "Software Engineering & Distributed Systems Specialist",
+    "image": "/Mentors/Prince-yadav.jpeg",
+    "socials": {
+      "linkedin": "https://www.linkedin.com/in/ecnirp"
+    }
+  },
+  {
+    "id": "ankit-jha",
+    "name": "Ankit Jha",
+    "title": "Full Stack Developer",
+    "headline": "Full Stack Engineer & Web Architect",
+    "image": "/Mentors/Ankit-Jha.jpeg",
+    "socials": {
+      "instagram": "https://www.instagram.com/fullstackmodiji"
+    }
+  },
+  {
+    "id": "nandini-sharma",
+    "name": "Nandini Sharma",
+    "title": "Educator & Entrepreneur",
+    "headline": "EdTech Entrepreneur & Innovation Mentor",
+    "image": "/Mentors/Nandini-Sharma.jpeg",
+    "socials": {
+      "instagram": "https://www.instagram.com/thisis_alaska_"
+    }
+  },
+  {
+    "id": "swati-bansal",
+    "name": "Swati Bansal",
+    "title": "SDE at Amazon",
+    "headline": "Software Development Engineer & Cloud Specialist",
+    "image": "/Mentors/Swati-Bansal.jpeg",
+    "socials": {
+      "linkedin": "https://www.linkedin.com/in/swati-bansal-201b60bb"
+    }
+  }
+]
