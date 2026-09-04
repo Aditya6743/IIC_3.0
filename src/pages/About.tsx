@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react';
 import Footer from '../components/Footer';
-import GalleryContent from '../components/GalleryContent';
+import AboutContent from '../components/AboutContent';
 
-const Gallery: React.FC = () => {
+const About: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="min-h-screen bg-transparent relative">
-      <GalleryContent />
+      <AboutContent />
       <Footer />
     </div>
   );
 };
 
-export default Gallery;
+export default About;

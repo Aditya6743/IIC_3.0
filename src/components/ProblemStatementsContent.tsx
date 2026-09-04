@@ -180,7 +180,7 @@ const ProblemStatementsContent: React.FC = () => {
           MAIN CONTENT
       ====================================================== */}
 
-      <main className="container mx-auto px-4 py-20">
+      <main className="container mx-auto px-4 pt-32 pb-20">
 
         {/* HEADER */}
         <motion.div

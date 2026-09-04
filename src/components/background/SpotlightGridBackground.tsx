@@ -57,7 +57,7 @@ const SpotlightGridBackground: React.FC = () => {
       top: `calc(80px * ${gridIndex})`,
       duration: (i % 5) + 7, // 7 to 11 seconds
       delay: -((i * 2.1) % 15),
-      color: i % 2 === 0 ? 'via-cyan-400' : 'via-purple-400',
+      color: i % 2 === 0 ? 'via-cyan-400' : 'via-emerald-400',
       shadow: i % 2 === 0 ? 'rgba(34,211,238,0.5)' : 'rgba(168,85,247,0.5)'
     };
   });

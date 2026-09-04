@@ -59,7 +59,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; removed for Lenis */
 }
 
 body {
@@ -293,4 +293,50 @@ body {
     linear-gradient(rgba(20, 184, 166, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(20, 184, 166, 0.02) 1px, transparent 1px);
   background-size: 50px 50px;
+}
+
+@media (min-width: 768px) {
+  * {
+    cursor: none !important;
+  }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(1000%); }
+}
+.animate-scanline {
+  animation: scanline 2s linear infinite;
+}
+
+/* --- Production Performance Utilities --- */
+html, body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  backface-visibility: hidden;
+}
+
+/* Force GPU acceleration on heavy animated elements */
+.gpu-accel {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Prevent image ghosting and artifacts */
+img {
+  -webkit-user-drag: none;
+  transform: translateZ(0);
+}
+
+/* Disable hover effects on touch devices to prevent scroll jank */
+@media (hover: none) and (pointer: coarse) {
+  .hover\:scale-105:hover,
+  .hover\:scale-110:hover,
+  .group-hover\:scale-105,
+  .group-hover\:scale-110 {
+    transform: none !important;
+  }
 }

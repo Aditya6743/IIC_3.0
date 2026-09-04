@@ -10,7 +10,6 @@ const JudgesMentors: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-transparent relative">
-      <Navbar />
       <JudgesMentorsContent />
       <Footer />
     </div>

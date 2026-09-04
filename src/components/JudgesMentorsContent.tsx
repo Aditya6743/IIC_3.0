@@ -45,11 +45,8 @@ const JudgesMentorsContent: React.FC = () => {
   ];
 
   return (
-    <div
-      className="min-h-screen space-bg"
-      ref={sectionRef}
-    >
-      <main className="container mx-auto px-4 py-20">
+    <div className="min-h-screen space-bg pt-32 pb-20 " ref={sectionRef}>
+      <main className="container mx-auto px-4 pt-32 pb-20">
 
         {/* Header */}
         <motion.div
@@ -62,16 +59,6 @@ const JudgesMentorsContent: React.FC = () => {
           }
           transition={{ duration: 0.6 }}
         >
-
-          {/* Icon */}
-          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
-            <Users
-              className="h-7 w-7 text-pink-400"
-              aria-hidden="true"
-            />
-          </div>
-
-          {/* Heading */}
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Judges &amp;{' '}
             <span className="gradient-text">

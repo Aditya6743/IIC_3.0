@@ -7,14 +7,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 interface GalleryItem {
   image: string;
   text: string;
-  category: 'IIC 1.0' | 'IIC 2.0' | 'Workshops' | 'Ceremony' | 'Winners';
+  category: 'IIC 1.0' | 'IIC 2.0' | 'Workshops';
   caption: string;
   date: string;
   aspect: string; // e.g. "aspect-[4/3]" or "aspect-[3/4]" to prevent layout shift
 }
 
 const galleryItems: GalleryItem[] = [
-  { image: '/media/20241115_101932.jpg', text: 'Opening Session', category: 'Ceremony', caption: 'Inaugural address of IIC 2024 by university leadership.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
   { image: '/media/20241115_224002.jpg', text: 'Late Night Hacking', category: 'IIC 1.0', caption: 'Participants developing prototypes past midnight.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
   { image: '/media/20241115_224201.jpg', text: 'Mentor Interaction', category: 'Workshops', caption: 'Expert mentors assisting teams with engineering design.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
   { image: '/media/20241116_122330.jpg', text: 'Pitch Presentation', category: 'IIC 2.0', caption: 'Final prototype demonstration in front of panel judges.', date: 'Nov 16, 2024', aspect: 'aspect-[4/3]' },
@@ -23,15 +22,10 @@ const galleryItems: GalleryItem[] = [
   { image: '/media/IMG_2016.JPG', text: 'Colleague Coding', category: 'IIC 1.0', caption: 'Collaborative development of the web client backend.', date: 'Nov 15, 2024', aspect: 'aspect-[3/4]' },
   { image: '/media/IMG_2025.JPG', text: 'Deep Focus', category: 'IIC 2.0', caption: 'Putting final touches on the user interface before the demo.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
   { image: '/media/IMG_2028.JPG', text: 'Testing & Calibration', category: 'IIC 2.0', caption: 'Testing and debugging sensor inputs on the test rig.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
-  { image: '/media/IMG_2038.JPG', text: 'Innovation Showcase', category: 'Ceremony', caption: 'Attendees exploring interactive project stalls.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
-  { image: '/media/IMG_2094.JPG', text: 'Closing Panel', category: 'Ceremony', caption: 'Panel discussion on the future of strategic tech.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
-  { image: '/media/IMG_2121.JPG', text: 'Victory Celebration', category: 'Winners', caption: 'Team celebrating after securing a podium finish.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
-  { image: '/media/IMG_20241116_015025_570.jpg', text: 'Winner Announcement', category: 'Winners', caption: 'Awarding the first prize for smart village solutions.', date: 'Nov 16, 2024', aspect: 'aspect-[3/4]' },
   { image: '/media/IMG20241115230723.jpg', text: 'Hackathon Crowd', category: 'IIC 1.0', caption: 'Over 500 innovators gathered at the central arena.', date: 'Nov 15, 2024', aspect: 'aspect-[4/3]' },
-  { image: '/media/IMG_0004.jpeg', text: 'Team Portrait', category: 'Winners', caption: 'Group picture of the project team with their awards.', date: 'Nov 16, 2024', aspect: 'aspect-[4/3]' },
 ];
 
-const categories = ['All', 'IIC 1.0', 'IIC 2.0', 'Workshops', 'Ceremony', 'Winners'] as const;
+const categories = ['All', 'IIC 1.0', 'IIC 2.0', 'Workshops'] as const;
 
 interface GalleryCardProps {
   item: GalleryItem;
@@ -158,16 +152,13 @@ const GalleryContent: React.FC = () => {
   return (
     <div className="min-h-screen space-bg pb-24">
       {/* ── Page Header ─────────────────────────────────────────────────────── */}
-      <div className="container mx-auto px-4 pt-24 pb-8" ref={headerRef}>
+      <div className="container mx-auto px-4 pt-32 pb-8" ref={headerRef}>
         <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 24 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
-            <Camera className="h-7 w-7 text-pink-400" aria-hidden="true" />
-          </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             <span className="gradient-text">Event Gallery</span>
           </h1>
