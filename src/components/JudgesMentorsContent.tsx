@@ -4,6 +4,7 @@ import { Mentor } from '../types/mentor';
 import mentorsData from '../data/mentors.json';
 import MentorCard from './MentorCard';
 
+
 const JudgesMentorsContent: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const mentors = mentorsData as Mentor[];
