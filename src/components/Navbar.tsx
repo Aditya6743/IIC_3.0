@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,6 +30,8 @@ const Navbar: React.FC = () => {
 
     if (location.pathname !== route && route !== '') {
       navigate(path);
+      // Wait for page transition to start, then snap to top
+      setTimeout(() => window.scrollTo(0, 0), 100);
     } else if (section) {
       const element = document.getElementById(section);
       if (element) {
@@ -42,7 +45,7 @@ const Navbar: React.FC = () => {
   };
 
   const navItems = [
-    // { name: 'About', path: '/home#about' },
+    { name: 'About', path: '/about' },
     { name: 'Problem Statements', path: '/problem-statements' },
     { name: 'Judges & Mentors', path: '/judges-mentors' },
     { name: 'Guests', path: '/guests' },
@@ -55,7 +58,7 @@ const Navbar: React.FC = () => {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
         isScrolled
-          ? 'py-3 bg-[#02080b]/70 backdrop-blur-lg border-b border-white/5'
+          ? 'py-3 bg-transparent backdrop-blur-md border-b border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.1)]'
           : 'py-5 bg-transparent'
       )}
       role="navigation"
@@ -70,13 +73,13 @@ const Navbar: React.FC = () => {
               to="/"
               className="flex items-center space-x-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded"
               aria-label="IIC Home"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={(e) => { e.preventDefault(); handleNavClick('/'); }}
             >
               <img
                 alt="MUJ Logo"
                 src="/muj-logo.png"
                 width="120"
-                className="transition-opacity duration-300 hover:opacity-90 grayscale brightness-200 contrast-125 opacity-80 hover:opacity-100"
+                className="transition-all duration-300 hover:opacity-100 grayscale brightness-200 contrast-125 opacity-80 hover:scale-105 hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]"
               />
             </Link>
 
@@ -90,37 +93,50 @@ const Navbar: React.FC = () => {
               to="/"
               className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded"
               aria-label="IIC Home"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={(e) => { e.preventDefault(); handleNavClick('/'); }}
             >
               <img
                 alt="IIC 3.0 Logo"
-                src="/iic-3.0-logo.png"
+                src="/iic-3.0-logo-pro.png"
                 width="130"
-                className="transition-all duration-300 hover:opacity-90 drop-shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:drop-shadow-[0_0_20px_rgba(34,211,238,0.6)]"
-              />
+                className="transition-all duration-300 brightness-125 contrast-125 drop-shadow-[0_0_20px_rgba(34,211,238,0.6)] hover:scale-105 hover:drop-shadow-[0_0_30px_rgba(34,211,238,1)] hover:brightness-150"
+                />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-2">
+          <div className="hidden md:flex items-center space-x-2" onMouseLeave={() => setHoveredItem(null)}>
             {navItems.map((item) => {
-              const isActive =
-                item.path.startsWith(location.pathname) && location.pathname !== '/';
+              const isActive = item.path.startsWith(location.pathname) && location.pathname !== '/';
+              const isHovered = hoveredItem === item.name;
+              
               return (
                 <button
                   key={item.name}
                   onClick={() => handleNavClick(item.path)}
+                  onMouseEnter={() => setHoveredItem(item.name)}
                   className={cn(
-                    'relative px-3 py-2 text-sm transition-all duration-300 rounded-md group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 font-medium tracking-wide',
-                    isActive ? 'text-cyan-400' : 'text-gray-400 hover:text-white'
+                    'relative px-4 py-2 text-sm transition-colors duration-300 rounded-full group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 font-medium tracking-wide',
+                    isActive || isHovered ? 'text-white' : 'text-gray-400'
                   )}
                   aria-current={isActive ? 'page' : undefined}
                 >
-                  {item.name}
+                  <span className="relative z-10">{item.name}</span>
+                  
+                  {/* Sliding Hover Pill */}
+                  {isHovered && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 z-0 bg-white/10 rounded-full"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  
+                  {/* Active Indicator Line */}
                   <span
                     className={cn(
-                      'absolute -bottom-0 left-2 right-2 h-px bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-300',
-                      isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0'
+                      'absolute -bottom-1 left-4 right-4 h-[2px] bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-300 rounded-full',
+                      isActive ? 'opacity-100 translate-y-0 shadow-[0_0_8px_rgba(34,211,238,0.5)]' : 'opacity-0 translate-y-1'
                     )}
                     aria-hidden="true"
                   />

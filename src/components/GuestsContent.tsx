@@ -9,7 +9,7 @@ const GuestsContent: React.FC = () => {
 
   return (
     <div className="min-h-screen space-bg" ref={sectionRef}>
-      <main className="container mx-auto px-4 py-20">
+      <main className="container mx-auto px-4 pt-32 pb-20">
 
         {/* Header */}
         <motion.div
@@ -18,9 +18,6 @@ const GuestsContent: React.FC = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
-            <Sparkles className="h-7 w-7 text-pink-400" aria-hidden="true" />
-          </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Our <span className="gradient-text">Guests</span>
           </h1>

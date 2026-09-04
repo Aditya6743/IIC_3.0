@@ -1,37 +1,49 @@
 import React from 'react';
-import { Instagram, Linkedin, Github, Mail, MapPin } from 'lucide-react';
+import { Instagram, Linkedin, Mail, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const quickLinks = [
   { name: 'About', path: '/about' },
-  { name: 'Prizes', path: '/prizes' },
   { name: 'Sponsors', path: '/sponsors' },
-  { name: 'FAQ', path: '/faq' },
+  { name: 'Problem Statements', path: '/problem-statements' },
+  { name: 'Judges & Mentors', path: '/judges-mentors' },
   { name: 'Gallery', path: '/gallery' },
 ];
 
 const socialLinks = [
   { href: 'https://www.instagram.com/iicmuj?igsh=ZzZjejkyOW5ibmNs', icon: <Instagram size={18} />, label: 'Instagram' },
   { href: 'https://www.linkedin.com/company/international-innovation-challenge-iic/', icon: <Linkedin size={18} />, label: 'LinkedIn' },
-  { href: 'https://github.com/SS-9098/IIC-2.0', icon: <Github size={18} />, label: 'GitHub' },
 ];
+
+// Simple seeded random function to keep stars deterministic
+const random = (seed: number) => {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
 
 const Sparkles = () => {
   const sparkles = Array.from({ length: 60 });
   return (
     <div className="absolute top-0 left-0 right-0 h-0 z-20 overflow-visible pointer-events-none">
       {sparkles.map((_, i) => {
-        const isCyan = Math.random() > 0.4;
+        // Use deterministic random values based on the index `i`
+        const r1 = random(i);
+        const r2 = random(i + 100);
+        const r3 = random(i + 200);
+        const r4 = random(i + 300);
+        const r5 = random(i + 400);
+
+        const isCyan = r1 > 0.4;
         const color = isCyan ? '#22d3ee' : '#10b981'; // cyan-400 or emerald-500
         const shadow = isCyan ? 'rgba(34,211,238,0.8)' : 'rgba(16,185,129,0.8)';
-        const size = Math.random() * 3 + 1.5; // 1px to 3px
+        const size = r2 * 3 + 1.5; // 1px to 4.5px
         return (
           <motion.div
             key={i}
             className="absolute rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
+              left: `${r3 * 100}%`,
               top: '0px',
               width: `${size}px`,
               height: `${size}px`,
@@ -42,13 +54,13 @@ const Sparkles = () => {
             animate={{
               opacity: [0, 1, 0],
               scale: [0, 1.2, 0],
-              y: [0, Math.random() * -30 - 10], // Float up between 10px and 40px
-              x: [0, (Math.random() - 0.5) * 20] // Drift left or right slightly
+              y: [0, r4 * -30 - 10], // Float up between 10px and 40px
+              x: [0, (r5 - 0.5) * 20] // Drift left or right slightly
             }}
             transition={{
-              duration: Math.random() * 2 + 1.5, // 1.5s to 3.5s
+              duration: random(i + 500) * 2 + 1.5, // 1.5s to 3.5s
               repeat: Infinity,
-              delay: Math.random() * 4,
+              delay: random(i + 600) * 4,
               ease: "easeOut"
             }}
           />
@@ -167,23 +179,32 @@ const FooterParticles = () => {
         }
       `}</style>
       {particles.map((_, i) => {
-        const isCyan = Math.random() > 0.5;
+        const r1 = random(i * 7 + 10);
+        const r2 = random(i * 11 + 20);
+        const r3 = random(i * 13 + 30);
+        const r4 = random(i * 17 + 40);
+        const r5 = random(i * 19 + 50);
+        const r6 = random(i * 23 + 60);
+        const r7 = random(i * 29 + 70);
+        const r8 = random(i * 31 + 80);
+        
+        const isCyan = r1 > 0.5;
         const color = isCyan ? "#22d3ee" : "#10b981";
-        const size = Math.random() * 3 + 1.5;
+        const size = r2 * 3 + 1.5;
         return (
           <div
             key={`fp-${i}`}
             className="absolute rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: `${r3 * 100}%`,
+              top: `${r4 * 100}%`,
               width: `${size}px`,
               height: `${size}px`,
               backgroundColor: color,
               boxShadow: `0 0 ${size * 3}px ${size}px ${isCyan ? "rgba(34,211,238,0.5)" : "rgba(16,185,129,0.5)"}`,
-              "--max-opacity": Math.random() * 0.6 + 0.4,
-              "--max-scale": Math.random() + 1,
-              animation: `twinkle-particle ${3 + Math.random() * 4}s ease-in-out ${Math.random() * 2}s infinite`,
+              "--max-opacity": r5 * 0.6 + 0.4,
+              "--max-scale": r6 + 1,
+              animation: `twinkle-particle ${3 + r7 * 4}s ease-in-out ${r8 * 2}s infinite`,
               willChange: "opacity, transform"
             } as React.CSSProperties}
           />
@@ -214,7 +235,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20 max-w-7xl mx-auto">
           
           {/* Brand & Description (Takes up 5 columns) */}
-          <div className="flex flex-col items-center md:items-start md:col-span-5 space-y-6">
+          <div className="flex flex-col items-center md:items-start md:col-span-5 space-y-6 p-6 rounded-2xl hover:bg-white/[0.02] transition-colors duration-500 border border-transparent hover:border-white/[0.05]">
             <Link to="/" className="inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded group">
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -222,10 +243,10 @@ const Footer: React.FC = () => {
               >
                 <img
                   alt="IIC 3.0 Logo"
-                  src="/iic-3.0-logo.png"
+                  src="/iic-3.0-logo-pro.png"
                   width="180"
-                  className="opacity-90 drop-shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all duration-500 group-hover:drop-shadow-[0_0_25px_rgba(34,211,238,0.6)] group-hover:opacity-100"
-                />
+                  className="brightness-125 contrast-125 drop-shadow-[0_0_20px_rgba(34,211,238,0.5)] transition-all duration-500 group-hover:drop-shadow-[0_0_35px_rgba(34,211,238,0.8)] group-hover:brightness-150"
+                  />
               </motion.div>
             </Link>
             
@@ -246,7 +267,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Quick Links (Takes up 3 columns) */}
-          <div className="flex flex-col items-center md:items-start md:col-span-3">
+          <div className="flex flex-col items-center md:items-start md:col-span-3 p-6 rounded-2xl hover:bg-white/[0.02] transition-colors duration-500 border border-transparent hover:border-white/[0.05]">
             <h3 className="text-white font-semibold mb-6 text-xs uppercase tracking-widest opacity-80">Explore</h3>
             <ul className="space-y-4 text-center md:text-left w-full">
               {quickLinks.map((link) => (
@@ -265,7 +286,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Contact & Social Links (Takes up 4 columns) */}
-          <div className="flex flex-col items-center md:items-start md:col-span-4">
+          <div className="flex flex-col items-center md:items-start md:col-span-4 p-6 rounded-2xl hover:bg-white/[0.02] transition-colors duration-500 border border-transparent hover:border-white/[0.05]">
             <h3 className="text-white font-semibold mb-6 text-xs uppercase tracking-widest opacity-80">Connect</h3>
             
             <div className="flex gap-4 mb-10">
@@ -285,12 +306,24 @@ const Footer: React.FC = () => {
             </div>
 
             <div className="space-y-4 text-sm text-gray-400 text-center md:text-left">
-              <a href="mailto:contact@iicmuj.com" className="flex items-center gap-3 hover:text-cyan-400 transition-colors group">
+              <a href="mailto:iic.manipal@gmail.com" className="flex items-center gap-3 hover:text-cyan-400 transition-colors group">
                 <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-cyan-500/10 transition-colors">
                   <Mail size={14} className="opacity-70 group-hover:opacity-100 transition-opacity group-hover:text-cyan-400" />
                 </div>
-                <span className="font-light tracking-wide">contact@iicmuj.com</span>
+                <span className="font-light tracking-wide">iic.manipal@gmail.com</span>
               </a>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-start gap-3 group">
+                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="opacity-70 group-hover:opacity-100 transition-opacity group-hover:text-cyan-400"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                  </div>
+                  <div className="font-light tracking-wide leading-relaxed pt-1 group-hover:text-gray-300 transition-colors">
+                    Keshav Anand: <a href="tel:7970466554" className="hover:text-cyan-400">7970466554</a><br />
+                    Sarath Mohanraj: <a href="tel:8903244085" className="hover:text-cyan-400">8903244085</a>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex items-start gap-3 group">
                 <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0">
                   <MapPin size={14} className="opacity-70 group-hover:opacity-100 transition-opacity group-hover:text-emerald-400" />

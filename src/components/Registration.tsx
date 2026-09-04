@@ -29,9 +29,6 @@ const Registration: React.FC = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
-            <Rocket className="h-7 w-7 text-pink-400" aria-hidden="true" />
-          </div>
           <h2
             id="register-heading"
             className="text-4xl md:text-5xl font-bold text-white mb-4"

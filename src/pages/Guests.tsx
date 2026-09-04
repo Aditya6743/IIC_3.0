@@ -10,7 +10,6 @@ const Guests: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-transparent relative">
-      <Navbar />
       <GuestsContent />
       <Footer />
     </div>

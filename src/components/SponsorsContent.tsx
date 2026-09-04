@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Building, ExternalLink, ShieldCheck, Trophy, Sparkles } from 'lucide-react';
+import { ExternalLink, ShieldCheck, Trophy, Sparkles } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
 // import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -60,6 +60,14 @@ const goldSponsors: Sponsor[] = [
     tier: 'Technology Partner',
   },
   {
+    logo: '/sponsors/doa-rajasthan-dark.png',
+    name: 'Department of Agriculture',
+    industry: 'Government of Rajasthan',
+    website: 'https://agriculture.rajasthan.gov.in/',
+    description: 'Empowering innovation in agriculture and agritech to solve real-world farming challenges.',
+    tier: 'Government Partner',
+  },
+  {
     logo: '/sponsors/doic.png',
     name: 'DoIC MUJ',
     industry: 'Academic Innovation Dept',
@@ -103,6 +111,14 @@ const problemPartners: Sponsor[] = [
     tier: 'Problem Partner',
   },
   {
+    logo: '/sponsors/doa-rajasthan-dark.png',
+    name: 'Department of Agriculture',
+    industry: 'Government of Rajasthan',
+    website: 'https://agriculture.rajasthan.gov.in/',
+    description: 'Empowering innovation in agriculture and agritech to solve real-world farming challenges.',
+    tier: 'Problem Partner',
+  },
+  {
     logo: '/sponsors/Group 1.png',
     name: 'HCLTech',
     industry: 'Information Technology & Consulting',
@@ -110,6 +126,14 @@ const problemPartners: Sponsor[] = [
     description: 'Global technology company delivering digital, engineering, cloud, AI, and software services.',
     tier: 'Problem Partner',
   },
+  {
+    logo: '/sponsors/icar-logo-png_seeklogo-158112.png',
+    name: 'Indian Council of Agricultural Research (ICAR)',
+    industry: 'Engineering & Product Development',  
+    website: 'https://icar.org.in/',
+    description: 'National research institution for agricultural sciences and technology.',
+    tier: 'Problem Partner',
+  }
 ];
 
 const SponsorShowcaseCard: React.FC<{ sponsor: Sponsor; delay: number; isInView: boolean }> = ({
@@ -194,7 +218,7 @@ const SponsorsContent: React.FC = () => {
 
   return (
     <div className="min-h-screen space-bg" ref={sectionRef}>
-      <main className="container mx-auto px-4 py-20">
+      <main className="container mx-auto px-4 pt-32 pb-20">
 
         {/* Header */}
         <motion.div
@@ -203,9 +227,7 @@ const SponsorsContent: React.FC = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          {/* <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
-            <Building className="h-7 w-7 text-pink-400" aria-hidden="true" />
-          </div> */}
+          {/* */}
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Our <span className="gradient-text">Sponsors</span>
           </h1>

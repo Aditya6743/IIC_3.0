@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import GalleryContent from '../components/GalleryContent';
 
@@ -10,7 +9,6 @@ const Gallery: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-transparent relative">
-      <Navbar />
       <GalleryContent />
       <Footer />
     </div>

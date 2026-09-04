@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, MapPin, Rocket } from 'lucide-react';
 import { motion, useInView, useReducedMotion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
+import SplitText from './SplitText';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -172,25 +173,24 @@ const Hero: React.FC = () => {
               </div>
 
               {/* Innovation Unleashed follows */}
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: baseDelay + 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 font-light tracking-tight mt-3 block"
-              >
-                Innovation Unleashed
-              </motion.span>
+              <div className="mt-3 overflow-hidden">
+                <SplitText 
+                  text="Innovation Unleashed" 
+                  delay={baseDelay + 0.3} 
+                  staggerDelay={0.08}
+                  className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-light tracking-tight"
+                  wordClassName="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 pb-2"
+                />
+              </div>
             </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: baseDelay + 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-lg md:text-xl text-gray-400 mb-10 leading-relaxed max-w-lg font-light"
-            >
-              We're back with bigger impact and bolder innovation. Join the most
-              anticipated technology conference and hackathon of 2026.
-            </motion.p>
+            <div className="text-lg md:text-xl text-gray-400 mb-10 leading-relaxed max-w-lg font-light">
+              <SplitText 
+                text="We're back with bigger impact and bolder innovation. Join the most anticipated technology conference and hackathon of 2026."
+                delay={baseDelay + 0.5}
+                staggerDelay={0.03}
+              />
+            </div>
 
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -202,8 +202,10 @@ const Hero: React.FC = () => {
                 ref={btnRef}
                 onMouseMove={handleBtnMove}
                 onMouseLeave={handleBtnLeave}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 style={{ x: btnSpringX, y: btnSpringY }}
-                className="relative px-8 py-4 bg-cyan-500 text-cyan-950 font-bold uppercase tracking-wider text-sm rounded-full overflow-hidden group shadow-[0_0_20px_rgba(34,211,238,0.2)] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)]"
+                className="relative px-10 py-5 bg-cyan-400 text-cyan-950 font-black uppercase tracking-widest text-sm rounded-full overflow-hidden group shadow-[0_0_30px_rgba(34,211,238,0.3)] hover:shadow-[0_0_50px_rgba(34,211,238,0.6)] transition-shadow duration-300 border border-cyan-300/50"
                 onClick={() =>
                   window.open(
                     'https://docs.google.com/forms/d/1r6umjVOO-wcnGa-XwrCkjcvPk2f8rcAo1msmgnfnCz0/edit',
@@ -212,9 +214,16 @@ const Hero: React.FC = () => {
                   )
                 }
               >
-                {/* Highlight Sweep */}
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-sweep" />
-                <span className="relative z-10">Submit Project</span>
+                {/* Cyber Matrix Glitch Hover Effect */}
+                <div className="absolute inset-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8L3N2Zz4=')] opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay" />
+                
+                {/* Dynamic Light Sweep */}
+                <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/80 to-transparent -translate-x-[150%] group-hover:animate-sweep" />
+                
+                <span className="relative z-10 flex items-center gap-3">
+                  <span className="w-2 h-2 rounded-full bg-cyan-950 animate-pulse" />
+                  Submit Project
+                </span>
               </motion.button>
             </motion.div>
 
@@ -267,16 +276,23 @@ const Hero: React.FC = () => {
                   animate={{ rotateY: flipDegrees }}
                   transition={{ duration: 1.2, type: "spring", stiffness: 60, damping: 15 }}
                   onDoubleClick={() => setFlipDegrees(prev => prev + 360)}
-                  style={{ transformStyle: 'preserve-3d' }}
+                  whileHover={{ scale: 1.05 }}
+                  style={{ transformStyle: 'preserve-3d', cursor: 'grab' }}
+                  whileTap={{ cursor: 'grabbing', scale: 0.95 }}
+                  className="group relative"
                 >
+                  {/* Continuous Float Animation */}
+                  {/* Dedicated hardware-accelerated glow (avoids drop-shadow flickering) */}
+                  <div className="absolute inset-0 w-full h-full bg-cyan-400/15 blur-[50px] rounded-full transition-opacity duration-500 opacity-30 group-hover:opacity-60" style={{ transform: 'translateZ(20px)' }} />
+                  
                   {/* Continuous Float Animation */}
                   <motion.img
                     src="/hero-iic.png"
                     alt="IIC 3.0 3D Logo"
-                    className="w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(34,211,238,0.3)]"
+                    className="relative w-full h-auto object-contain transition-[filter] duration-500 hover:brightness-110"
+                    style={{ transform: 'translateZ(60px)', clipPath: 'inset(0 3% 0 3%)' }}
                     animate={{ y: [0, -15, 0] }}
                     transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    style={{ transform: 'translateZ(60px)' }}
                   />
                 </motion.div>
               </motion.div>
