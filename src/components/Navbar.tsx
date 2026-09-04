@@ -149,7 +149,7 @@ const Navbar: React.FC = () => {
                 className="px-5 py-2 text-sm font-semibold tracking-wide text-cyan-950 bg-cyan-400 rounded-full hover:bg-cyan-300 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-[#02080b]"
                 onClick={() =>
                   window.open(
-                    'https://docs.google.com/forms/d/1r6umjVOO-wcnGa-XwrCkjcvPk2f8rcAo1msmgnfnCz0/edit',
+                    'no',
                     '_blank',
                     'noopener,noreferrer'
                   )
@@ -232,7 +232,7 @@ const Navbar: React.FC = () => {
                     className="w-full px-5 py-3 text-sm font-semibold tracking-wide text-cyan-950 bg-cyan-400 rounded-xl hover:bg-cyan-300 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     onClick={() =>
                       window.open(
-                        'https://docs.google.com/forms/d/1r6umjVOO-wcnGa-XwrCkjcvPk2f8rcAo1msmgnfnCz0/edit',
+                        'no',
                         '_blank',
                         'noopener,noreferrer'
                       )
