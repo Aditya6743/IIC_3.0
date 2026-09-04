@@ -3,6 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { Users } from 'lucide-react';
 import ComingSoon from '@/components/ComingSoon';
 
+
 const JudgesMentorsContent: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-80px' });

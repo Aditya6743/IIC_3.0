@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 const TaglineText = () => (
@@ -11,17 +11,39 @@ const TaglineText = () => (
 
 const TypographyMask: React.FC = () => {
   const containerRef = useRef<HTMLElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
 
-  const clipProgress = useTransform(scrollYProgress, [0.2, 0.8], [100, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.2], [0.95, 1]);
+  const clipProgress = useTransform(scrollYProgress, (progress) => {
+    const [start, end] = isMobile ? [0.05, 0.75] : [0.2, 0.8];
+    if (progress <= start) return 100;
+    if (progress >= end) return 0;
+    return 100 - ((progress - start) / (end - start)) * 100;
+  });
+
+  const scale = useTransform(scrollYProgress, (progress) => {
+    const [start, end] = isMobile ? [0, 0.15] : [0, 0.2];
+    const [minScale, maxScale] = isMobile ? [0.92, 1] : [0.95, 1];
+    if (progress <= start) return minScale;
+    if (progress >= end) return maxScale;
+    return minScale + ((progress - start) / (end - start)) * (maxScale - minScale);
+  });
 
   return (
-    <section ref={containerRef} className="relative h-[250vh] bg-transparent z-10 w-full">
+    <section ref={containerRef} className="relative h-[135vh] md:h-[250vh] bg-transparent z-10 w-full">
       <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pointer-events-none">
         <motion.div style={{ scale }} className="relative flex flex-col items-center justify-center w-full">
           
