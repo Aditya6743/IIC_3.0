@@ -2,8 +2,15 @@ import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Users } from 'lucide-react';
 
+import NandiniSharma from './Nandini-Sharma.jpeg';
+import PrinceYadav from './Prince-yadav.jpeg';
+import AyushmanPandita from './Ayushman-Pandita.jpeg';
+import AnkitJha from './Ankit-Jha.jpeg';
+import SwatiBansal from './Swati-Bansal.jpeg';
+
 const JudgesMentorsContent: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+
   const isInView = useInView(sectionRef, {
     once: true,
     margin: '-80px',
@@ -13,22 +20,27 @@ const JudgesMentorsContent: React.FC = () => {
     {
       name: 'Prince Yadav',
       role: 'SDE2 @ GreyOrange',
-      image: '/images/prince-yadav.jpg',
+      image: PrinceYadav,
     },
     {
       name: 'Ayushman Pandita',
       role: 'Founder @ growthrocket.ai',
-      image: '/images/ayushman-pandita.jpg',
+      image: AyushmanPandita,
     },
     {
       name: 'Ankit Jha',
       role: 'Full Stack Developer',
-      image: '/images/ankit-jha.jpg',
+      image: AnkitJha,
     },
     {
       name: 'Nandini Sharma',
       role: 'Educator & Entrepreneur',
-      image: '/images/nandini-sharma.jpg',
+      image: NandiniSharma,
+    },
+    {
+      name: 'Swati Bansal',
+      role: 'SDE at Amazon',
+      image: SwatiBansal,
     },
   ];
 
@@ -50,6 +62,7 @@ const JudgesMentorsContent: React.FC = () => {
           }
           transition={{ duration: 0.6 }}
         >
+
           {/* Icon */}
           <div className="inline-block p-3 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-full mb-5">
             <Users
@@ -80,6 +93,7 @@ const JudgesMentorsContent: React.FC = () => {
 
         {/* Judges & Mentors */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
           {judges.map((judge, index) => (
             <motion.div
               key={judge.name}
@@ -95,10 +109,12 @@ const JudgesMentorsContent: React.FC = () => {
               }}
               className="group"
             >
+
               <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden hover:border-pink-500/50 transition-all duration-300 hover:-translate-y-2">
 
                 {/* Image */}
                 <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+
                   <img
                     src={judge.image}
                     alt={judge.name}
@@ -107,10 +123,12 @@ const JudgesMentorsContent: React.FC = () => {
 
                   {/* Image Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+
                 </div>
 
                 {/* Details */}
                 <div className="p-5 text-center">
+
                   <h2 className="text-xl font-semibold text-white mb-2">
                     {judge.name}
                   </h2>
@@ -118,10 +136,14 @@ const JudgesMentorsContent: React.FC = () => {
                   <p className="text-pink-400 text-sm">
                     {judge.role}
                   </p>
+
                 </div>
+
               </div>
+
             </motion.div>
           ))}
+
         </div>
 
       </main>
