@@ -7,15 +7,13 @@ const guests = [
     name: "Col. Rajyavardhan Singh Rathore",
     role: "Minister of IT & Communication, Govt of Rajasthan",
     description: "Olympic Medallist and prominent political leader driving youth affairs, sports, and IT innovation in Rajasthan.",
-    image: "/guest-rathore.jpg",
-    twitter: "https://twitter.com/Ra_THORe",
+    image: "/guest/guest-rathore.jpg",
   },
   {
     name: "Dr. Jagdeesh Chandra",
     role: "CEO & Editor-in-Chief, First India News",
     description: "Former IAS officer and visionary media personality leading one of the fastest-growing news networks in India.",
-    image: "/guest-jagdeesh.jpg",
-    twitter: "https://twitter.com/1stIndiaNews",
+    image: "/guest/guest-jagdeesh.jpg",
   }
 ];
 
