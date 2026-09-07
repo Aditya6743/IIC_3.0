@@ -1,154 +1,27 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { ShoppingCart, Plus, Minus, X, Utensils, Coffee, Pizza, IndianRupee, Users, UserRound, Phone, MapPin, QrCode, Store, ArrowLeft, Sandwich, IceCream, Clock, Check, Loader2, Upload } from 'lucide-react';
-import { QRCodeCanvas } from 'qrcode.react';
+import { ShoppingCart, Plus, Minus, X, IndianRupee, Clock, QrCode, Upload, Check, Loader2, UserRound, Phone } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 import { createPortal } from 'react-dom';
 import { globalLenis } from './SmoothScroll';
-import { supabase } from '../lib/supabase';
 
-// 6 Premium Outlets Data
-const outlets = [
-  {
-    id: 1,
-    name: "The Hacker's Grill",
-    desc: "Premium loaded burgers and crispy sides.",
-    icon: Store,
-    color: "text-orange-400",
-    bg: "bg-orange-500/10",
-    border: "hover:border-orange-500/30",
-    menu: [
-      { id: 101, name: 'Cyber Burger', price: 90, icon: Utensils, category: 'Fast Food', desc: 'Loaded veg burger with double cheese and secret sauce.' },
-      { id: 102, name: 'Binary Fries', price: 70, icon: Utensils, category: 'Sides', desc: 'Crispy salted potato fries with peri-peri sprinkle.' },
-      { id: 103, name: 'Grilled Sandwich', price: 80, icon: Sandwich, category: 'Fast Food', desc: 'Triple decker grilled cheese and vegetable sandwich.' },
-    ]
-  },
-  {
-    id: 2,
-    name: "Cyber Slice",
-    desc: "Authentic wood-fired pizzas and garlic bread.",
-    icon: Pizza,
-    color: "text-red-400",
-    bg: "bg-red-500/10",
-    border: "hover:border-red-500/30",
-    menu: [
-      { id: 201, name: 'Margherita Pizza', price: 150, icon: Pizza, category: 'Pizza', desc: 'Classic cheese and tomato thin crust pizza.' },
-      { id: 202, name: 'Pepperoni Simulator', price: 180, icon: Pizza, category: 'Pizza', desc: 'Spicy paneer and jalapeno loaded pizza.' },
-      { id: 203, name: 'Garlic Nodes', price: 90, icon: Utensils, category: 'Sides', desc: 'Cheesy garlic breadsticks with dip.' },
-    ]
-  },
-  {
-    id: 3,
-    name: "Midnight Noodles",
-    desc: "Spicy late-night hacker fuel and pasta.",
-    icon: Utensils,
-    color: "text-yellow-400",
-    bg: "bg-yellow-500/10",
-    border: "hover:border-yellow-500/30",
-    menu: [
-      { id: 301, name: 'Masala Maggi', price: 50, icon: Utensils, category: 'Noodles', desc: 'Spicy late-night classic hacker fuel.' },
-      { id: 302, name: 'Cheese Maggi', price: 70, icon: Utensils, category: 'Noodles', desc: 'Loaded with melting cheese and herbs.' },
-      { id: 303, name: 'White Sauce Pasta', price: 120, icon: Utensils, category: 'Pasta', desc: 'Creamy penne pasta with exotic veggies.' },
-    ]
-  },
-  {
-    id: 4,
-    name: "Liquid Cooling",
-    desc: "Energy drinks, cold coffee, and thick shakes.",
-    icon: Coffee,
-    color: "text-cyan-400",
-    bg: "bg-cyan-500/10",
-    border: "hover:border-cyan-500/30",
-    menu: [
-      { id: 401, name: 'Cold Coffee', price: 80, icon: Coffee, category: 'Beverages', desc: 'Thick and creamy classic cold coffee.' },
-      { id: 402, name: 'Red Bull', price: 115, icon: Coffee, category: 'Beverages', desc: 'Instant wing-provider for coding sessions.' },
-      { id: 403, name: 'Oreo Shake', price: 100, icon: Coffee, category: 'Beverages', desc: 'Crushed oreos blended with thick vanilla ice cream.' },
-    ]
-  },
-  {
-    id: 5,
-    name: "Sweet Syntax",
-    desc: "Desserts, waffles, and sweet cravings.",
-    icon: IceCream,
-    color: "text-pink-400",
-    bg: "bg-pink-500/10",
-    border: "hover:border-pink-500/30",
-    menu: [
-      { id: 501, name: 'Chocolate Waffle', price: 110, icon: IceCream, category: 'Dessert', desc: 'Crispy waffle loaded with melted dark chocolate.' },
-      { id: 502, name: 'Vanilla Sundae', price: 90, icon: IceCream, category: 'Dessert', desc: 'Vanilla scoops with nuts and chocolate syrup.' },
-      { id: 503, name: 'Brownie Fudge', price: 80, icon: IceCream, category: 'Dessert', desc: 'Hot chocolate brownie with a gooey center.' },
-    ]
-  },
-  {
-    id: 6,
-    name: "Bite & Compile",
-    desc: "Quick snacks, wraps, and rolls.",
-    icon: Sandwich,
-    color: "text-green-400",
-    bg: "bg-green-500/10",
-    border: "hover:border-green-500/30",
-    menu: [
-      { id: 601, name: 'Paneer Tikka Roll', price: 100, icon: Sandwich, category: 'Wraps', desc: 'Spicy paneer wrapped in a crispy paratha.' },
-      { id: 602, name: 'Veg Kathi Roll', price: 80, icon: Sandwich, category: 'Wraps', desc: 'Mixed veggies and sauces rolled up tight.' },
-      { id: 603, name: 'Nachos Platter', price: 120, icon: Utensils, category: 'Snacks', desc: 'Crispy nachos loaded with cheese and salsa.' },
-    ]
-  }
+const menuItems = [
+  { id: 101, name: 'Aloo Tikki Burger', price: 75, category: 'Burgers', desc: 'Classic spiced potato patty burger' },
+  { id: 102, name: 'Crispy Masala Burger', price: 80, category: 'Burgers', desc: 'Crunchy masala patty with fresh veggies' },
+  { id: 103, name: 'Tandoori Paneer Burger', price: 130, category: 'Burgers', desc: 'Grilled paneer marinated in tandoori spices' },
+  { id: 201, name: 'Aloo Tikki Wrap', price: 110, category: 'Wraps', desc: 'Spiced potato filling wrapped in a soft tortilla' },
+  { id: 202, name: 'Spicy Paneer Wrap', price: 140, category: 'Wraps', desc: 'Fiery paneer chunks with tangy sauce wrap' },
+  { id: 301, name: 'Salted Fries', price: 80, category: 'Sides', desc: 'Classic crispy salted french fries' },
+  { id: 302, name: 'Peri Peri Fries', price: 100, category: 'Sides', desc: 'Spicy and tangy peri-peri coated fries' },
+  { id: 401, name: 'Regular Cold Coffee', price: 80, category: 'Beverages', desc: 'Classic refreshing cold coffee' },
+  { id: 402, name: 'Medium Cold Coffee', price: 90, category: 'Beverages', desc: 'Larger serving of our classic cold coffee' },
+  { id: 403, name: 'Brownie Shake', price: 120, category: 'Beverages', desc: 'Rich chocolate shake blended with gooey brownie' }
 ];
 
-// Helper to look up an item by ID globally
-const getMenuItemById = (id: number) => {
-  for (const outlet of outlets) {
-    const item = outlet.menu.find(i => i.id === id);
-    if (item) return item;
-  }
-  return null;
-};
-
-const checkIsOpen = () => {
-  const now = new Date();
-  const eventStart = new Date(2026, 9, 7, 5, 0); // Sept 8, 2026, 11:30 AM
-
-  // If the event hasn't started yet, keep the menu fully OPEN for preview & testing
-  if (now < eventStart) {
-    return true;
-  }
-
-  // Once the event starts, strictly enforce the hackathon food windows
-  const month = now.getMonth(); // 8 is Sept
-  const date = now.getDate();
-  const hour = now.getHours();
-
-  // We are open if:
-  // It's Sept 8 or 9 AND hour is between 2-4 (2:00 AM to 4:59 AM)
-  const isSept8or9 = month === 8 && (date === 8 || date === 9);
-  const isWindow2 = isSept8or9 && (hour >= 2 && hour < 5);
-
-  // For the 11 PM - 1 AM window:
-  // 11 PM (23:00 - 23:59) must be on Sept 8 or 9
-  const is11PM = isSept8or9 && hour === 23;
-  // 12 AM (00:00 - 00:59) must be on Sept 9 or 10 (the morning after)
-  const isSept9or10 = month === 8 && (date === 9 || date === 10);
-  const is12AM = isSept9or10 && hour === 0;
-
-  const isWindow1 = is11PM || is12AM;
-
-  return isWindow1 || isWindow2;
-};
-
-const FoodMenu: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [isOpen, setIsOpen] = useState(checkIsOpen());
-
-  // Auto-refresh the open status every minute
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsOpen(checkIsOpen());
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
+const FoodMenu = () => {
+  const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
 
-  const [selectedOutlet, setSelectedOutlet] = useState<number | null>(null);
   const [cart, setCart] = useState<Record<number, number>>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('hackathonFoodCart');
@@ -157,232 +30,222 @@ const FoodMenu: React.FC = () => {
     return {};
   });
 
-  useEffect(() => {
-    localStorage.setItem('hackathonFoodCart', JSON.stringify(cart));
-  }, [cart]);
-
-  const handlePaymentComplete = async () => {
-    // 1. Double-click execution guard
-    if (isVerifying) return;
-    
-    // 2. Global spam/buffer guard (60 seconds cooldown between orders)
-    const now = Date.now();
-    const cooldown = 60000;
-    const lastOrder = localStorage.getItem('hackathonLastOrderTime');
-    
-    if (lastOrder && now - parseInt(lastOrder) < cooldown) {
-      const remainingSeconds = Math.ceil((cooldown - (now - parseInt(lastOrder))) / 1000);
-      alert(`Please wait ${remainingSeconds} seconds before placing another order to prevent duplicates.`);
-      return;
-    }
-
-    setIsVerifying(true);
-    
-    try {
-      const orderId = Math.random().toString(36).substring(2, 9).toUpperCase();
-      
-      const newOrder = {
-        id: orderId,
-        items: cartItems,
-        total: totalAmount,
-        teamName,
-        teamLeaderName,
-        teamLeaderPhone,
-        roomNo,
-        paymentImage: paymentScreenshot?.data,
-        timestamp: Date.now(),
-        status: 'Received'
-      };
-
-      // 1. Save to global Supabase database for organizers
-      const { error } = await supabase
-        .from('food_orders')
-        .insert([
-          {
-            order_id: orderId,
-            team_name: teamName,
-            team_leader_name: teamLeaderName,
-            team_leader_phone: teamLeaderPhone,
-            room_no: roomNo,
-            total_amount: totalAmount,
-            items: cartItems,
-            payment_image: paymentScreenshot?.data,
-            status: 'Received'
-          }
-        ]);
-
-      if (error) {
-        console.error("Supabase Error:", error);
-        // We will still proceed locally so the user experience doesn't break during the hackathon
-        // if the database goes down or keys are missing.
-      }
-
-      // 2. Save locally so the user can track their own orders
-      setPastOrders(prev => [newOrder, ...prev]);
-      
-      // 3. Record success time for the buffer
-      localStorage.setItem('hackathonLastOrderTime', Date.now().toString());
-
-      // 4. Clear cart & show success screen
-      setCart({});
-      setIsVerifying(false);
-      setCheckoutStep(3);
-    } catch (err) {
-      console.error(err);
-      setIsVerifying(false);
-    }
-  };
-
-  const handleFinishOrder = () => {
-    setIsPaymentOpen(false);
-    setCheckoutStep(1);
-    setTeamName('');
-    setTeamLeaderName('');
-    setTeamLeaderPhone('');
-    setRoomNo('');
-    setPaymentScreenshot(null);
-  };
+  const [isOpen, setIsOpen] = useState(false);
+  const [isPreview, setIsPreview] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
-  const [checkoutStep, setCheckoutStep] = useState<1 | 2 | 3>(1);
   const [teamName, setTeamName] = useState('');
   const [teamLeaderName, setTeamLeaderName] = useState('');
   const [teamLeaderPhone, setTeamLeaderPhone] = useState('');
   const [roomNo, setRoomNo] = useState('');
+  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [screenshotBase64, setScreenshotBase64] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [paymentScreenshot, setPaymentScreenshot] = useState<{name: string, data: string} | null>(null);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = event.target?.result as string;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 800;
-        const MAX_HEIGHT = 800;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, width, height);
-
-        // Compress aggressively to webp to save db space
-        const compressedBase64 = canvas.toDataURL('image/webp', 0.6);
-        setPaymentScreenshot({ name: file.name, data: compressedBase64 });
-      };
-    };
-  };
+  const [checkoutStep, setCheckoutStep] = useState(1);
   const [pastOrders, setPastOrders] = useState<any[]>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('hackathonPastOrders');
+      const saved = localStorage.getItem('hackathonFoodOrders');
       if (saved) return JSON.parse(saved);
     }
     return [];
   });
 
   useEffect(() => {
-    localStorage.setItem('hackathonPastOrders', JSON.stringify(pastOrders));
+    localStorage.setItem('hackathonFoodCart', JSON.stringify(cart));
+  }, [cart]);
+
+  useEffect(() => {
+    localStorage.setItem('hackathonFoodOrders', JSON.stringify(pastOrders));
   }, [pastOrders]);
 
-  const addToCart = (id: number) => {
-    setCart(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+  useEffect(() => {
+    const checkTime = () => {
+      const now = new Date();
+      const eventStart = new Date(2026, 8, 8, 11, 30); // Sept 8, 11:30 AM
+      
+      if (now < eventStart) {
+        setIsOpen(true);
+        setIsPreview(true);
+        return;
+      }
+      
+      setIsPreview(false);
+      const day = now.getDate();
+      const h = now.getHours();
+      
+      const isSept8 = day === 8;
+      const isSept9 = day === 9;
+      const isWindow1 = h >= 23 || h < 1; // 11 PM - 1 AM
+      const isWindow2 = h >= 2 && h < 5;  // 2 AM - 5 AM
+      
+      if ((isSept8 || isSept9) && (isWindow1 || isWindow2)) {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
+      }
+    };
+    
+    checkTime();
+    const interval = setInterval(checkTime, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const addToCart = (itemId: number) => {
+    setCart(prev => ({ ...prev, [itemId]: (prev[itemId] || 0) + 1 }));
   };
 
-  const removeFromCart = (id: number) => {
+  const removeFromCart = (itemId: number) => {
     setCart(prev => {
       const newCart = { ...prev };
-      if (newCart[id] > 1) {
-        newCart[id] -= 1;
+      if (newCart[itemId] > 1) {
+        newCart[itemId]--;
       } else {
-        delete newCart[id];
+        delete newCart[itemId];
       }
       return newCart;
     });
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setPaymentScreenshot(file);
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          const MAX_SIZE = 800;
+          if (width > height && width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          const compressedBase64 = canvas.toDataURL('image/webp', 0.6);
+          setScreenshotBase64(compressedBase64);
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePaymentComplete = async () => {
+    if (isVerifying || !screenshotBase64) return;
+    
+    const now = Date.now();
+    const lastOrderTime = localStorage.getItem('hackathonLastOrderTime');
+    if (lastOrderTime && now - parseInt(lastOrderTime) < 60000) {
+      alert(`Please wait ${Math.ceil((60000 - (now - parseInt(lastOrderTime))) / 1000)} seconds before placing another order to prevent duplicates.`);
+      return;
+    }
+    
+    setIsVerifying(true);
+    
+    const orderId = Math.random().toString(36).substring(2, 9).toUpperCase();
+    const orderPayload = {
+      order_id: orderId,
+      team_name: teamName,
+      team_leader_name: teamLeaderName,
+      team_leader_phone: teamLeaderPhone,
+      room_no: roomNo,
+      total_amount: totalAmount,
+      items: cartItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      payment_image: screenshotBase64,
+      status: 'Received',
+      created_at: new Date().toISOString()
+    };
+    
+    try {
+      const { error } = await supabase
+        .from('food_orders')
+        .insert([orderPayload]);
+        
+      if (error) throw error;
+      
+      const newOrder = {
+        id: orderId,
+        timestamp: new Date().toISOString(),
+        items: orderPayload.items,
+        total: totalAmount,
+        status: 'Received',
+        roomNo,
+        teamName,
+        teamLeaderName,
+        teamLeaderPhone
+      };
+      
+      setPastOrders(prev => [newOrder, ...prev]);
+      localStorage.setItem('hackathonLastOrderTime', now.toString());
+      setCheckoutStep(3); // Success Screen
+    } catch (err) {
+      console.error('Failed to submit order:', err);
+      alert('Failed to place order. Please try again or contact an organizer.');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleFinishOrder = () => {
+    setIsPaymentOpen(false);
+    setCart({});
+    setPaymentScreenshot(null);
+    setScreenshotBase64(null);
+    if (globalLenis) {
+      globalLenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  };
+
   const cartItems = Object.entries(cart).map(([id, quantity]) => {
-    const item = getMenuItemById(parseInt(id));
-    const outlet = outlets.find(o => o.menu.some(m => m.id === parseInt(id)));
-    return { ...item!, quantity, outletName: outlet?.name };
+    const item = menuItems.find(i => i.id === parseInt(id));
+    return { ...item!, quantity };
   });
 
-  const totalAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const totalItems = Object.values(cart).reduce((sum, q) => sum + q, 0);
-
-  // Dynamic UPI Link
-  const upiId = "arktandon@okhdfcbank";
-  const upiName = "Ark Tandon";
-  const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${totalAmount}&cu=INR`;
-
-  const activeOutlet = selectedOutlet !== null ? outlets.find(o => o.id === selectedOutlet) : null;
+  const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen space-bg relative pb-48" ref={sectionRef}>
-      <main className="container mx-auto px-4 pt-32 max-w-6xl">
-        
-        {/* Header changes based on view */}
-        <motion.div
-          className="text-center mb-16 relative"
-          initial={{ opacity: 0, y: 24 }}
+    <div className="min-h-screen space-bg relative pb-48">
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 -right-1/4 w-[800px] h-[800px] bg-cyan-900/20 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow"></div>
+        <div className="absolute bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-blue-900/20 rounded-full blur-[100px] mix-blend-screen animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+      </div>
+
+      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10" ref={sectionRef}>
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          {activeOutlet && (
-            <button 
-              onClick={() => { setSelectedOutlet(null); if (globalLenis) { globalLenis.scrollTo(0, { immediate: true }); } else { window.scrollTo(0, 0); }; }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 p-3 bg-white/5 hover:bg-white/10 rounded-full text-white transition-colors flex items-center justify-center hidden md:flex"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-          )}
-
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            {activeOutlet ? activeOutlet.name : <>Cyber <span className="gradient-text">Café</span> Outlets</>}
-          </h1>
-          <div className="section-divider mb-8 mx-auto" aria-hidden="true" />
-          
-          {activeOutlet && (
-            <button 
-              onClick={() => { setSelectedOutlet(null); if (globalLenis) { globalLenis.scrollTo(0, { immediate: true }); } else { window.scrollTo(0, 0); }; }}
-              className="md:hidden flex items-center justify-center mx-auto mb-6 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-full text-white transition-colors text-sm"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Outlets
-            </button>
-          )}
-
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            {activeOutlet ? activeOutlet.desc : "Select an outlet to view their menu and order food directly to your desk."}
-          </p>
-          
-          <div className="mt-6 flex flex-col items-center justify-center gap-3 text-sm">
-            <div className="flex flex-col md:flex-row items-center gap-3">
-              <span className="bg-cyan-500/10 text-cyan-400 px-3 py-1.5 rounded-full border border-cyan-500/20 font-semibold flex items-center shadow-[0_0_15px_rgba(34,211,238,0.15)]">
-                <Clock className="w-4 h-4 mr-1.5" /> Hackathon Operating Hours
-              </span>
-              <span className="text-gray-400">
-                Open exclusively <strong className="text-gray-200">11 PM - 1 AM</strong> and <strong className="text-gray-200">2 AM - 5 AM</strong> on Sept 8 & 9
-              </span>
-            </div>
-            {new Date() < new Date(2026, 8, 8, 11, 30) && (
-              <span className="text-yellow-500/90 text-xs font-semibold uppercase tracking-widest bg-yellow-500/10 px-4 py-1.5 rounded-full border border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.1)] mt-2">
+          <div className="inline-flex flex-col items-center">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Slice of <span className="gradient-text">Heaven</span>
+            </h1>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              Premium hackathon fuel delivered straight to your desk.
+            </p>
+            
+            {isPreview && (
+              <span className="text-yellow-500/90 text-xs font-semibold uppercase tracking-widest bg-yellow-500/10 px-4 py-1.5 rounded-full border border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.1)] mt-4 inline-block">
                 Preview Mode: Menu preview closes at Event Start (Sept 8, 11:30 AM)
               </span>
             )}
@@ -390,7 +253,7 @@ const FoodMenu: React.FC = () => {
         </motion.div>
 
         {/* Active Orders Section */}
-        {pastOrders.length > 0 && !activeOutlet && (
+        {pastOrders.length > 0 && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -401,7 +264,7 @@ const FoodMenu: React.FC = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {pastOrders.map(order => (
-                <div key={order.id} className="bg-white/[0.02] border border-cyan-500/20 hover:border-cyan-500/40 transition-colors rounded-3xl p-6 shadow-[0_0_30px_rgba(34,211,238,0.03)] flex flex-col">
+                <div key={order.id} className="bg-white/[0.02] border border-cyan-500/20 hover:border-cyan-500/40 transition-colors rounded-[2rem] p-5 sm:p-6 shadow-[0_0_30px_rgba(34,211,238,0.03)] flex flex-col">
                   <div className="flex justify-between items-start mb-5 border-b border-white/5 pb-5">
                     <div>
                       <div className="text-cyan-400 font-bold tracking-widest text-xs mb-1.5 flex items-center">
@@ -420,14 +283,17 @@ const FoodMenu: React.FC = () => {
                   <div className="space-y-3 flex-grow">
                     {order.items.map((item: any, i: number) => (
                       <div key={i} className="flex justify-between text-sm items-center">
-                        <span className="text-gray-300 flex items-center"><span className="text-cyan-500 font-bold mr-2">{item.quantity}x</span> {item.name}</span>
-                        <span className="text-gray-500 font-medium">₹{item.price * item.quantity}</span>
+                        <span className="text-gray-300">
+                          <span className="text-cyan-400 mr-2 font-bold">{item.quantity}x</span> 
+                          {item.name}
+                        </span>
+                        <span className="text-gray-500">₹{item.price * item.quantity}</span>
                       </div>
                     ))}
                   </div>
                   <div className="mt-5 pt-4 border-t border-white/5 flex justify-between items-center font-bold bg-white/[0.01] -mx-5 sm:-mx-6 -mb-5 sm:-mb-6 px-5 sm:px-6 py-4 rounded-b-[2rem]">
-                    <span className="text-gray-400 text-sm uppercase tracking-widest">Total Paid</span>
-                    <span className="text-cyan-400 text-lg">₹{order.total}</span>
+                    <span className="text-gray-400">Total Paid</span>
+                    <span className="text-cyan-400 text-lg flex items-center"><IndianRupee className="w-4 h-4 mr-0.5" />{order.total}</span>
                   </div>
                 </div>
               ))}
@@ -435,127 +301,74 @@ const FoodMenu: React.FC = () => {
           </motion.div>
         )}
 
-        {/* View Switching & Closed State */}
-        <AnimatePresence mode="wait">
-          {!isOpen ? (
-            <motion.div
-              key="closed-state"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.4 }}
-              className="flex flex-col items-center justify-center py-20 text-center"
-            >
-              <div className="w-24 h-24 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-8 shadow-[0_0_50px_rgba(239,68,68,0.2)]">
-                <Clock className="w-12 h-12" />
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-wide">
-                Currently <span className="text-red-500">Closed</span>
-              </h2>
-              <p className="text-lg text-gray-400 max-w-lg mx-auto leading-relaxed">
-                The Cyber Café is resting. We are exclusively taking orders during the following hackathon hours:
-              </p>
-              <div className="mt-10 flex flex-col sm:flex-row gap-6 justify-center">
-                <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 sm:px-8 shadow-inner">
-                  <span className="block text-sm text-gray-500 uppercase tracking-widest mb-2 font-semibold">Window 1</span>
-                  <span className="text-xl font-bold text-white">11:00 PM - 1:00 AM</span>
+        {isOpen ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {menuItems.map((item, index) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="bg-white/[0.02] border border-white/5 rounded-3xl p-5 sm:p-6 flex flex-col hover:bg-white/[0.04] transition-colors shadow-[0_0_20px_rgba(0,0,0,0.2)] hover:border-cyan-500/20 group"
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors">{item.name}</h3>
+                  <span className="text-lg font-bold text-cyan-400 bg-cyan-400/10 px-3 py-1 rounded-full flex items-center">
+                    <IndianRupee className="w-4 h-4 mr-0.5" /> {item.price}
+                  </span>
                 </div>
-                <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 sm:px-8 shadow-inner">
-                  <span className="block text-sm text-gray-500 uppercase tracking-widest mb-2 font-semibold">Window 2</span>
-                  <span className="text-xl font-bold text-white">2:00 AM - 5:00 AM</span>
+                <p className="text-sm text-gray-400 mb-6 flex-grow">{item.desc}</p>
+                
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                  <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">{item.category}</span>
+                  {cart[item.id] ? (
+                    <div className="flex items-center bg-white/10 rounded-full border border-white/10 p-1">
+                      <button 
+                        onClick={() => removeFromCart(item.id)}
+                        className="w-8 h-8 rounded-full bg-black/40 flex items-center justify-center text-white hover:bg-black/60 transition-colors"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span className="w-10 text-center font-bold text-white">{cart[item.id]}</span>
+                      <button 
+                        onClick={() => addToCart(item.id)}
+                        className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center text-black hover:bg-cyan-400 transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={() => addToCart(item.id)}
+                      className="px-5 py-2.5 bg-white/5 hover:bg-cyan-500 hover:text-black text-white text-sm font-bold rounded-full transition-all duration-300 flex items-center border border-white/10 hover:border-transparent group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)]"
+                    >
+                      <Plus className="w-4 h-4 mr-1.5" /> Add
+                    </button>
+                  )}
                 </div>
-              </div>
-              <p className="text-sm text-cyan-500/50 mt-10 uppercase tracking-widest font-bold">Sept 8 & 9 Only</p>
-            </motion.div>
-          ) : !activeOutlet ? (
-            /* OUTLETS GRID */
-            <motion.div
-              key="outlets-grid"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-            >
-              {outlets.map((outlet) => {
-                const Icon = outlet.icon;
-                return (
-                  <div
-                    key={outlet.id}
-                    onClick={() => { setSelectedOutlet(outlet.id); if (globalLenis) { globalLenis.scrollTo(0, { immediate: true }); } else { window.scrollTo(0, 0); }; }}
-                    className={`bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[2rem] p-8 cursor-pointer hover:bg-white/[0.05] transition-all duration-300 flex flex-col items-center text-center group ${outlet.border} hover:shadow-[0_10px_40px_-15px_rgba(34,211,238,0.15)]`}
-                  >
-                    <div className={`p-5 rounded-3xl ${outlet.bg} ${outlet.color} mb-6 transform group-hover:scale-110 transition-transform duration-300`}>
-                      <Icon className="w-10 h-10" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">{outlet.name}</h3>
-                    <p className="text-gray-400 text-sm">{outlet.desc}</p>
-                    <div className="mt-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs text-white uppercase tracking-widest group-hover:bg-cyan-500/10 group-hover:border-cyan-500/30 group-hover:text-cyan-400 transition-all">
-                      View Menu
-                    </div>
-                  </div>
-                )
-              })}
-            </motion.div>
-          ) : (
-            /* MENU GRID FOR SELECTED OUTLET */
-            <motion.div
-              key="menu-grid"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {activeOutlet.menu.map((item) => {
-                const Icon = item.icon;
-                const quantity = cart[item.id] || 0;
-                return (
-                  <div
-                    key={item.id}
-                    className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[2rem] p-6 hover:bg-white/[0.05] transition-all duration-300 hover:border-cyan-500/30 hover:shadow-[0_10px_30px_-15px_rgba(34,211,238,0.2)] flex flex-col"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400">
-                        <Icon className="w-6 h-6" />
-                      </div>
-                      <span className="text-xs font-semibold text-pink-400 uppercase tracking-widest px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20">
-                        {item.category}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-2">{item.name}</h3>
-                    <p className="text-sm text-gray-400 mb-6 flex-grow">{item.desc}</p>
-                    <div className="flex items-center justify-between mt-auto">
-                      <span className="text-2xl font-bold text-white flex items-center">
-                        <IndianRupee className="w-5 h-5 mr-1 text-cyan-400" />
-                        {item.price}
-                      </span>
-                      
-                      {quantity === 0 ? (
-                        <button
-                          onClick={() => addToCart(item.id)}
-                          className="px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-white font-medium hover:bg-cyan-500 hover:text-black hover:border-cyan-500 transition-all duration-300"
-                        >
-                          Add
-                        </button>
-                      ) : (
-                        <div className="flex items-center bg-white/10 rounded-full border border-white/20 p-1">
-                          <button onClick={() => removeFromCart(item.id)} className="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors">
-                            <Minus className="w-4 h-4" />
-                          </button>
-                          <span className="w-8 text-center text-white font-semibold">{quantity}</span>
-                          <button onClick={() => addToCart(item.id)} className="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors">
-                            <Plus className="w-4 h-4" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-20 h-20 bg-gray-900/50 rounded-full flex items-center justify-center mb-6 border border-white/5">
+              <Clock className="w-10 h-10 text-gray-500" />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-4">Kitchen is Closed</h2>
+            <p className="text-gray-400 max-w-md mx-auto leading-relaxed">
+              Food delivery is only available during specific hackathon windows:
+              <br/><br/>
+              <span className="text-cyan-400 font-bold block mb-2">11:00 PM - 1:00 AM</span>
+              <span className="text-cyan-400 font-bold block">2:00 AM - 5:00 AM</span>
+              <br/>
+              Check back during these times to order!
+            </p>
+          </div>
+        )}
       </main>
 
       {/* Sticky Mobile-Optimized Floating Cart - PORTALED */}
@@ -594,13 +407,13 @@ const FoodMenu: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl px-4 py-4"
+              className="fixed inset-0 z-[150] flex items-center justify-center bg-black/80 backdrop-blur-xl px-4 py-4"
             >
               <motion.div
-                initial={{ scale: 0.95, opacity: 0, y: 10 }}
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.95, opacity: 0, y: 10 }}
-                className="w-full max-w-xl bg-[#031015]/90 backdrop-blur-2xl border border-white/10 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(34,211,238,0.15)] relative flex flex-col max-h-[90vh]"
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="bg-[#051319] border border-cyan-500/30 w-full max-w-3xl rounded-3xl sm:rounded-[2.5rem] overflow-hidden shadow-[0_0_50px_rgba(34,211,238,0.15)] flex flex-col relative max-h-[90vh]"
               >
                 <button
                   onClick={() => setIsPaymentOpen(false)}
@@ -628,7 +441,6 @@ const FoodMenu: React.FC = () => {
                               <div className="text-white font-medium flex items-center">
                                 {item.name}
                               </div>
-                              <div className="text-gray-500 text-xs mt-0.5">{item.outletName}</div>
                             </div>
                             
                             <div className="flex items-center gap-4 sm:gap-6">
@@ -642,43 +454,41 @@ const FoodMenu: React.FC = () => {
                                   <Plus className="w-3 h-3" />
                                 </button>
                               </div>
-                              
-                              {/* Price */}
-                              <div className="text-white font-semibold flex items-center min-w-[50px] justify-end">
-                                <IndianRupee className="w-3 h-3 mr-0.5 text-gray-500 group-hover:text-cyan-400 transition-colors" />
-                                {item.price * item.quantity}
-                              </div>
+                              <span className="text-white font-bold w-12 text-right flex items-center justify-end"><IndianRupee className="w-3.5 h-3.5 mr-0.5 text-gray-500" />{item.price * item.quantity}</span>
                             </div>
                           </div>
                         ))}
                       </div>
-                      <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
-                        <span className="text-white font-bold">Total Due</span>
-                        <span className="text-xl font-bold text-cyan-400 flex items-center">
-                          <IndianRupee className="w-4 h-4 mr-1" />{totalAmount}
-                        </span>
+                      
+                      <div className="mt-4 pt-4 border-t border-cyan-500/20 flex justify-between items-center">
+                        <span className="text-gray-300 font-medium">Total to Pay</span>
+                        <span className="text-2xl font-bold text-cyan-400 flex items-center"><IndianRupee className="w-5 h-5 mr-1" />{totalAmount}</span>
                       </div>
                     </div>
-                    
-                    <div className="space-y-6 flex-grow">
-                      <div className="space-y-2 relative">
-                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest ml-1">Team Name</label>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Users className="h-5 w-5 text-cyan-500/50" />
-                          </div>
-                          <input
-                            type="text"
-                            value={teamName}
-                            onChange={(e) => setTeamName(e.target.value)}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-cyan-400/50 focus:bg-cyan-950/10 transition-all placeholder:text-gray-600 shadow-inner"
-                            placeholder="e.g. Cyber Punks"
-                          />
-                        </div>
-                      </div>
 
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8 mt-auto shrink-0">
+                      <div>
+                        <label className="block text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2">Team Name</label>
+                        <input
+                          type="text"
+                          value={teamName}
+                          onChange={(e) => setTeamName(e.target.value.replace(/[^a-zA-Z0-9 ]/g, ''))}
+                          placeholder="e.g. Cyber Punks"
+                          className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 sm:py-4 text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2">Room / Table No.</label>
+                        <input
+                          type="text"
+                          value={roomNo}
+                          onChange={(e) => setRoomNo(e.target.value.replace(/[^a-zA-Z0-9 ]/g, ''))}
+                          placeholder="e.g. Room 402"
+                          className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 sm:py-4 text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                        />
+                      </div>
                       <div className="space-y-2 relative">
-                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest ml-1">Team Leader Name</label>
+                        <label className="text-xs font-semibold text-cyan-400 uppercase tracking-widest ml-1">Team Leader Name</label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <UserRound className="h-5 w-5 text-cyan-500/50" />
@@ -687,14 +497,14 @@ const FoodMenu: React.FC = () => {
                             type="text"
                             value={teamLeaderName}
                             onChange={(e) => setTeamLeaderName(e.target.value)}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-cyan-400/50 focus:bg-cyan-950/10 transition-all placeholder:text-gray-600 shadow-inner"
-                            placeholder="e.g. Alex Johnson"
+                            placeholder="e.g. John Doe"
+                            className="w-full bg-white/[0.03] border border-white/10 rounded-xl pl-12 pr-4 py-3 sm:py-4 text-white focus:outline-none focus:border-cyan-500 transition-colors placeholder:text-gray-600"
                           />
                         </div>
                       </div>
 
                       <div className="space-y-2 relative">
-                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest ml-1">Team Leader Phone Number</label>
+                        <label className="text-xs font-semibold text-cyan-400 uppercase tracking-widest ml-1">Team Leader Phone</label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <Phone className="h-5 w-5 text-cyan-500/50" />
@@ -702,34 +512,18 @@ const FoodMenu: React.FC = () => {
                           <input
                             type="tel"
                             value={teamLeaderPhone}
-                            onChange={(e) => setTeamLeaderPhone(e.target.value)}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-cyan-400/50 focus:bg-cyan-950/10 transition-all placeholder:text-gray-600 shadow-inner"
+                            onChange={(e) => setTeamLeaderPhone(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
                             placeholder="e.g. 9876543210"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2 relative">
-                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest ml-1">Room Number</label>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <MapPin className="h-5 w-5 text-cyan-500/50" />
-                          </div>
-                          <input
-                            type="text"
-                            value={roomNo}
-                            onChange={(e) => setRoomNo(e.target.value)}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-cyan-400/50 focus:bg-cyan-950/10 transition-all placeholder:text-gray-600 shadow-inner"
-                            placeholder="e.g. Lab 3, Table 4"
+                            className="w-full bg-white/[0.03] border border-white/10 rounded-xl pl-12 pr-4 py-3 sm:py-4 text-white focus:outline-none focus:border-cyan-500 transition-colors placeholder:text-gray-600"
                           />
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="mt-8 pt-6 border-t border-white/5">
+
+                    <div className="shrink-0">
                       <button
-                        disabled={!teamName.trim() || !teamLeaderName.trim() || !teamLeaderPhone.trim() || !roomNo.trim() || totalItems === 0}
                         onClick={() => setCheckoutStep(2)}
+                        disabled={!teamName.trim() || !teamLeaderName.trim() || !teamLeaderPhone.trim() || !roomNo.trim() || totalItems === 0}
                         className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold rounded-2xl hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] flex items-center justify-center"
                       >
                         {totalItems === 0 ? "Cart is Empty" : <>Proceed to Pay <IndianRupee className="w-5 h-5 ml-1.5" /></>}
@@ -738,32 +532,30 @@ const FoodMenu: React.FC = () => {
                   </div>
                 ) : checkoutStep === 2 ? (
                   <div className="flex flex-col h-full overflow-y-auto custom-scrollbar overscroll-contain" data-lenis-prevent="true">
-                    <div className="p-5 sm:p-8 pb-4 sm:pb-6 bg-gradient-to-b from-cyan-950/20 to-transparent">
+                    <div className="p-5 sm:p-8 pb-4 sm:pb-6 bg-gradient-to-b from-cyan-950/20 to-transparent shrink-0">
                       <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
                         <QrCode className="w-6 h-6 mr-3 text-cyan-400" /> Complete Payment
                       </h2>
                       <p className="text-sm text-gray-400">Scan with any UPI app to pay</p>
                     </div>
 
-                    <div className="px-4 sm:px-8 py-6 flex flex-col items-center justify-center flex-grow">
-                      <div className="bg-white p-5 rounded-3xl shadow-[0_0_50px_rgba(34,211,238,0.15)] mb-2 relative group">
-                        <QRCodeCanvas 
-                          value={upiLink} 
-                          size={200} 
-                          bgColor={"#ffffff"} 
-                          fgColor={"#000000"} 
-                          level={"H"} 
-                          includeMargin={false}
+                    <div className="px-4 sm:px-8 py-2 flex flex-col items-center justify-center flex-grow">
+                      {/* Fixed Static QR Code Image */}
+                      <div className="bg-white p-3 rounded-2xl shadow-[0_0_50px_rgba(34,211,238,0.15)] mb-4 relative group w-[180px] sm:w-[220px] aspect-square flex items-center justify-center overflow-hidden">
+                        <img 
+                          src="/payment-qr.png?v=2" 
+                          alt="UPI QR Code" 
+                          className="w-full h-full object-cover"
                         />
                         {/* Premium animated corner brackets */}
-                        <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-cyan-400 rounded-tl-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-cyan-400 rounded-tr-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-cyan-400 rounded-bl-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-cyan-400 rounded-br-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-cyan-400 rounded-tl-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-cyan-400 rounded-tr-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-cyan-400 rounded-bl-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-cyan-400 rounded-br-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
 
                       {/* Screenshot Upload Section */}
-                      <div className="w-full max-w-[240px] mt-2 p-4 bg-white/[0.02] border border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center relative hover:bg-white/[0.04] transition-colors cursor-pointer group">
+                      <div className="w-full max-w-[240px] p-4 bg-white/[0.02] border border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center relative hover:bg-white/[0.04] transition-colors cursor-pointer group">
                         <input 
                           type="file" 
                           accept="image/*" 
@@ -790,7 +582,7 @@ const FoodMenu: React.FC = () => {
 
                     </div>
                     
-                    <div className="p-6 bg-white/[0.03] border-t border-white/5 flex flex-col gap-5 mt-auto shrink-0">
+                    <div className="p-5 sm:p-6 bg-white/[0.03] border-t border-white/5 flex flex-col gap-4 mt-auto shrink-0">
                       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div className="flex flex-col text-center sm:text-left w-full sm:w-auto">
                           <span className="text-xs text-gray-400 uppercase tracking-widest mb-1">Amount Due</span>
