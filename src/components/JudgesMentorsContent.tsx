@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Users } from 'lucide-react';
+
 import { Mentor } from '../types/mentor';
 import mentorsData from '../data/mentors.json';
 import MentorCard from './MentorCard';

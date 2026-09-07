@@ -10,6 +10,8 @@ import JudgesMentors from './pages/JudgesMentors';
 import Guests from './pages/Guests';
 import ProblemStatements from './pages/ProblemStatements';
 import Ambassador from './pages/Ambassador';
+import Food from './pages/Food';
+
 
 import PageTransition from './components/PageTransition';
 import Preloader from './components/Preloader';
@@ -34,6 +36,8 @@ function AnimatedRoutes() {
         <Route path="/guests" element={<PageTransition><Guests /></PageTransition>} />
         <Route path="/problem-statements" element={<PageTransition><ProblemStatements /></PageTransition>} />
         <Route path="/ambassador" element={<PageTransition><Ambassador /></PageTransition>} />
+        <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
+
       </Routes>
     </AnimatePresence>
   );

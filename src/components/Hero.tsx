@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, MapPin, Rocket } from 'lucide-react';
 import { motion, useInView, useReducedMotion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Badge } from '@/components/ui/badge';
 import SplitText from './SplitText';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -15,10 +14,6 @@ const staggerContainer = {
   },
 };
 
-const fadeUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
-};
 
 const Hero: React.FC = () => {
   const [flipDegrees, setFlipDegrees] = useState(0);

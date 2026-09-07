@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
 
+export let globalLenis: any = null;
+
 const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const lenis = new Lenis({
@@ -12,6 +14,7 @@ const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
       wheelMultiplier: 1.0, // Natural feel
       touchMultiplier: 2,
     });
+    globalLenis = lenis;
 
     function raf(time: number) {
       lenis.raf(time);
@@ -22,6 +25,7 @@ const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
 
     return () => {
       lenis.destroy();
+      globalLenis = null;
     };
   }, []);
 
