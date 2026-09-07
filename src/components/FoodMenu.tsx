@@ -18,6 +18,45 @@ const menuItems = [
   { id: 402, name: 'Medium Cold Coffee', price: 90, category: 'Beverages', desc: 'Larger serving of our classic cold coffee' },
   { id: 403, name: 'Brownie Shake', price: 120, category: 'Beverages', desc: 'Rich chocolate shake blended with gooey brownie' }
 ];
+const MAX_ITEM_QUANTITY = 40;
+const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024;
+const MAX_SCREENSHOT_DIMENSION = 1400;
+
+const sanitizeCart = (value: unknown): Record<number, number> => {
+  if (!value || typeof value !== 'object') return {};
+
+  return Object.entries(value).reduce<Record<number, number>>((cartState, [itemId, quantity]) => {
+    const numericItemId = Number(itemId);
+    if (
+      menuItems.some(item => item.id === numericItemId) &&
+      typeof quantity === 'number' &&
+      Number.isInteger(quantity) &&
+      quantity > 0
+    ) {
+      cartState[numericItemId] = Math.min(quantity, MAX_ITEM_QUANTITY);
+    }
+    return cartState;
+  }, {});
+};
+
+type OrderItem = {
+  id: number;
+  name: string;
+  quantity: number;
+  price: number;
+};
+
+type Order = {
+  id: string;
+  timestamp: string;
+  items: OrderItem[];
+  total: number;
+  status: string;
+  roomNo: string;
+  teamName: string;
+  teamLeaderName: string;
+  teamLeaderPhone: string;
+};
 
 const FoodMenu = () => {
   const sectionRef = useRef(null);
@@ -25,8 +64,12 @@ const FoodMenu = () => {
 
   const [cart, setCart] = useState<Record<number, number>>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('hackathonFoodCart');
-      if (saved) return JSON.parse(saved);
+      try {
+        const saved = localStorage.getItem('hackathonFoodCart');
+        if (saved) return sanitizeCart(JSON.parse(saved));
+      } catch {
+        localStorage.removeItem('hackathonFoodCart');
+      }
     }
     return {};
   });
@@ -39,10 +82,12 @@ const FoodMenu = () => {
   const [teamLeaderPhone, setTeamLeaderPhone] = useState('');
   const [roomNo, setRoomNo] = useState('');
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
-  const [screenshotBase64, setScreenshotBase64] = useState<string | null>(null);
+  const [paymentScreenshotBlob, setPaymentScreenshotBlob] = useState<Blob | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState(1);
-  const [pastOrders, setPastOrders] = useState<any[]>(() => {
+  const [pastOrders, setPastOrders] = useState<Order[]>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('hackathonFoodOrders');
       if (saved) return JSON.parse(saved);
@@ -91,7 +136,7 @@ const FoodMenu = () => {
   }, []);
 
   const addToCart = (itemId: number) => {
-    setCart(prev => ({ ...prev, [itemId]: (prev[itemId] || 0) + 1 }));
+    setCart(prev => ({ ...prev, [itemId]: Math.min((prev[itemId] || 0) + 1, MAX_ITEM_QUANTITY) }));
   };
 
   const removeFromCart = (itemId: number) => {
@@ -106,44 +151,64 @@ const FoodMenu = () => {
     });
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setPaymentScreenshot(file);
-      
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          
-          const MAX_SIZE = 800;
-          if (width > height && width > MAX_SIZE) {
-            height *= MAX_SIZE / width;
-            width = MAX_SIZE;
-          } else if (height > MAX_SIZE) {
-            width *= MAX_SIZE / height;
-            height = MAX_SIZE;
-          }
-          
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-          
-          const compressedBase64 = canvas.toDataURL('image/webp', 0.6);
-          setScreenshotBase64(compressedBase64);
-        };
-        img.src = event.target?.result as string;
-      };
-      reader.readAsDataURL(file);
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setPaymentScreenshot(null);
+      setPaymentScreenshotBlob(null);
+      setPaymentError('Please choose a JPG, PNG, or WebP image.');
+      return;
+    }
+
+    if (file.size > MAX_SCREENSHOT_BYTES) {
+      setPaymentScreenshot(null);
+      setPaymentScreenshotBlob(null);
+      setPaymentError('Payment screenshots must be smaller than 5 MB.');
+      return;
+    }
+
+    setPaymentScreenshot(file);
+    setPaymentScreenshotBlob(null);
+    setPaymentError(null);
+
+    if (file.type === 'image/webp' && file.size <= MAX_SCREENSHOT_BYTES) {
+      setPaymentScreenshotBlob(file);
+      return;
+    }
+
+    const imageUrl = URL.createObjectURL(file);
+    try {
+      const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const loadedImage = new Image();
+        loadedImage.onload = () => resolve(loadedImage);
+        loadedImage.onerror = () => reject(new Error('Image could not be read'));
+        loadedImage.src = imageUrl;
+      });
+
+      const scale = Math.min(1, MAX_SCREENSHOT_DIMENSION / Math.max(image.width, image.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+      canvas.getContext('2d')?.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      const compressedImage = await new Promise<Blob | null>(resolve => {
+        canvas.toBlob(resolve, 'image/webp', 0.82);
+      });
+      if (!compressedImage) throw new Error('Image compression failed');
+      setPaymentScreenshotBlob(compressedImage);
+    } catch {
+      setPaymentScreenshot(null);
+      setPaymentError('The payment screenshot could not be processed.');
+    } finally {
+      URL.revokeObjectURL(imageUrl);
     }
   };
 
   const handlePaymentComplete = async () => {
-    if (isVerifying || !screenshotBase64) return;
+    if (isVerifying || !paymentScreenshotBlob) return;
     
     const now = Date.now();
     const lastOrderTime = localStorage.getItem('hackathonLastOrderTime');
@@ -153,39 +218,57 @@ const FoodMenu = () => {
     }
     
     setIsVerifying(true);
+    setIsUploading(true);
     
-    const orderId = Math.random().toString(36).substring(2, 9).toUpperCase();
-    const orderPayload = {
-      order_id: orderId,
-      team_name: teamName,
-      team_leader_name: teamLeaderName,
-      team_leader_phone: teamLeaderPhone,
-      room_no: roomNo,
-      total_amount: totalAmount,
-      items: cartItems.map(item => ({
-        id: item.id,
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price
-      })),
-      payment_image: screenshotBase64,
-      status: 'Received',
-      created_at: new Date().toISOString()
+    const orderId = crypto.randomUUID();
+    const orderItems = cartItems.map(item => ({ id: item.id, quantity: item.quantity }));
+    const paymentScreenshotPath = `payments/${orderId}.webp`;
+    let uploadSucceeded = false;
+
+    const isTransientUploadError = (error: { statusCode?: number; message?: string }) => {
+      const statusCode = error.statusCode ?? 0;
+      return statusCode === 408 || statusCode === 429 || statusCode >= 500 || !statusCode || /network|fetch|timeout/i.test(error.message ?? '');
     };
     
     try {
-      const { error } = await supabase
-        .from('food_orders')
-        .insert([orderPayload]);
+      let uploadError = null;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const result = await supabase.storage
+          .from('payment-screenshots')
+          .upload(paymentScreenshotPath, paymentScreenshotBlob, {
+            cacheControl: '3600',
+            contentType: 'image/webp',
+            upsert: false
+          });
+        uploadError = result.error;
+        if (!uploadError || !isTransientUploadError(uploadError)) break;
+        await new Promise(resolve => setTimeout(resolve, 250 * 2 ** attempt));
+      }
+
+      if (uploadError) throw uploadError;
+      uploadSucceeded = true;
+      setIsUploading(false);
+
+      const { data, error } = await supabase.rpc('place_food_order', {
+        p_order_id: orderId,
+        p_team_name: teamName,
+        p_team_leader_name: teamLeaderName,
+        p_team_leader_phone: teamLeaderPhone,
+        p_room_no: roomNo,
+        p_items: orderItems,
+        p_payment_screenshot_path: paymentScreenshotPath
+      });
         
       if (error) throw error;
+      const createdOrder = data?.[0];
+      if (!createdOrder) throw new Error('Order was not created');
       
       const newOrder = {
         id: orderId,
         timestamp: new Date().toISOString(),
-        items: orderPayload.items,
-        total: totalAmount,
-        status: 'Received',
+        items: cartItems,
+        total: createdOrder.total_amount,
+        status: createdOrder.status,
         roomNo,
         teamName,
         teamLeaderName,
@@ -197,8 +280,12 @@ const FoodMenu = () => {
       setCheckoutStep(3); // Success Screen
     } catch (err) {
       console.error('Failed to submit order:', err);
-      alert('Failed to place order. Please try again or contact an organizer.');
+      if (uploadSucceeded) {
+        await supabase.storage.from('payment-screenshots').remove([paymentScreenshotPath]);
+      }
+      setPaymentError(err instanceof Error ? err.message : 'Failed to place order. Please try again or contact an organizer.');
     } finally {
+      setIsUploading(false);
       setIsVerifying(false);
     }
   };
@@ -207,7 +294,8 @@ const FoodMenu = () => {
     setIsPaymentOpen(false);
     setCart({});
     setPaymentScreenshot(null);
-    setScreenshotBase64(null);
+    setPaymentScreenshotBlob(null);
+    setPaymentError(null);
     if (globalLenis) {
       globalLenis.scrollTo(0, { immediate: true });
     } else {
@@ -217,8 +305,9 @@ const FoodMenu = () => {
 
   const cartItems = Object.entries(cart).map(([id, quantity]) => {
     const item = menuItems.find(i => i.id === parseInt(id));
-    return { ...item!, quantity };
-  });
+    if (!item || !Number.isInteger(quantity) || quantity < 1 || quantity > MAX_ITEM_QUANTITY) return null;
+    return { ...item, quantity };
+  }).filter((item): item is (typeof menuItems)[number] & { quantity: number } => item !== null);
 
   const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -283,7 +372,7 @@ const FoodMenu = () => {
                     </div>
                   </div>
                   <div className="space-y-3 flex-grow">
-                    {order.items.map((item: any, i: number) => (
+                    {order.items.map((item, i) => (
                       <div key={i} className="flex justify-between text-sm items-center">
                         <span className="text-gray-300">
                           <span className="text-cyan-400 mr-2 font-bold">{item.quantity}x</span> 
@@ -580,10 +669,11 @@ const FoodMenu = () => {
                               <Check className="w-4 h-4" />
                             </div>
                             <span className="text-xs font-semibold text-white truncate max-w-[150px]">{paymentScreenshot.name}</span>
-                            <span className="text-[10px] text-cyan-400 mt-1">Tap to change</span>
+                            <span className="text-[10px] text-cyan-400 mt-1">Ready to upload</span>
                           </div>
                         )}
                       </div>
+                      {paymentError && <p className="text-xs text-red-400 text-center mt-3 max-w-[260px]">{paymentError}</p>}
 
                     </div>
                     
@@ -598,10 +688,12 @@ const FoodMenu = () => {
                         <div className="flex w-full sm:w-auto">
                           <button
                             onClick={handlePaymentComplete}
-                            disabled={isVerifying || !paymentScreenshot}
+                            disabled={isVerifying || !paymentScreenshotBlob}
                             className="w-full sm:w-auto px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-black text-sm font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
                           >
-                            {isVerifying ? (
+                            {isUploading ? (
+                              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading payment screenshot...</>
+                            ) : isVerifying ? (
                               <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Verifying...</>
                             ) : "Submit Payment"}
                           </button>
