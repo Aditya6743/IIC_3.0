@@ -22,6 +22,16 @@ const MAX_ITEM_QUANTITY = 40;
 const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024;
 const MAX_SCREENSHOT_DIMENSION = 1400;
 
+const isPaymentWindowOpen = (date = new Date()) => {
+  const isEventMonth = date.getFullYear() === 2026 && date.getMonth() === 8;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const isEventDay = isEventMonth && (day === 8 || day === 9);
+  const isLateWindow = isEventDay && (hour === 23 || hour === 0);
+  const isEarlyWindow = isEventDay && hour >= 2 && hour < 5;
+  return isLateWindow || isEarlyWindow;
+};
+
 const sanitizeCart = (value: unknown): Record<number, number> => {
   if (!value || typeof value !== 'object') return {};
 
@@ -76,6 +86,7 @@ const FoodMenu = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
+  const [canAcceptPayment, setCanAcceptPayment] = useState(() => isPaymentWindowOpen());
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [teamName, setTeamName] = useState('');
   const [teamLeaderName, setTeamLeaderName] = useState('');
@@ -111,15 +122,18 @@ const FoodMenu = () => {
       if (now < eventStart) {
         setIsOpen(true);
         setIsPreview(true);
+        setCanAcceptPayment(false);
         return;
       }
       
       setIsPreview(false);
+      setCanAcceptPayment(isPaymentWindowOpen(now));
+      const isEventMonth = now.getFullYear() === 2026 && now.getMonth() === 8;
       const day = now.getDate();
       const h = now.getHours();
       
-      const isSept8 = day === 8;
-      const isSept9 = day === 9;
+      const isSept8 = isEventMonth && day === 8;
+      const isSept9 = isEventMonth && day === 9;
       const isWindow1 = h >= 23 || h < 1; // 11 PM - 1 AM
       const isWindow2 = h >= 2 && h < 5;  // 2 AM - 5 AM
       
@@ -208,7 +222,7 @@ const FoodMenu = () => {
   };
 
   const handlePaymentComplete = async () => {
-    if (isVerifying || !paymentScreenshotBlob) return;
+    if (isVerifying || !paymentScreenshotBlob || !canAcceptPayment) return;
     
     const now = Date.now();
     const lastOrderTime = localStorage.getItem('hackathonLastOrderTime');
@@ -613,16 +627,22 @@ const FoodMenu = () => {
 
                     <div className="shrink-0">
                       <button
-                        onClick={() => setCheckoutStep(2)}
-                        disabled={!teamName.trim() || !teamLeaderName.trim() || !teamLeaderPhone.trim() || !roomNo.trim() || totalItems === 0}
+                        onClick={() => { if (canAcceptPayment) setCheckoutStep(2); }}
+                        disabled={!canAcceptPayment || !teamName.trim() || !teamLeaderName.trim() || !teamLeaderPhone.trim() || !roomNo.trim() || totalItems === 0}
                         className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold rounded-2xl hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] flex items-center justify-center"
                       >
-                        {totalItems === 0 ? "Cart is Empty" : <>Proceed to Pay <IndianRupee className="w-5 h-5 ml-1.5" /></>}
+                        {!canAcceptPayment ? "Ordering is closed" : totalItems === 0 ? "Cart is Empty" : <>Proceed to Pay <IndianRupee className="w-5 h-5 ml-1.5" /></>}
                       </button>
                     </div>
                   </div>
                 ) : checkoutStep === 2 ? (
-                  <div className="flex flex-col h-full overflow-y-auto custom-scrollbar overscroll-contain" data-lenis-prevent="true">
+                  !canAcceptPayment ? (
+                    <div className="flex flex-col items-center justify-center h-full p-10 text-center">
+                      <Clock className="w-12 h-12 text-gray-500 mb-5" />
+                      <h2 className="text-2xl font-bold text-white mb-3">Ordering is closed</h2>
+                      <p className="text-gray-400 max-w-sm">The payment QR is available only during 11:00 PM - 1:00 AM and 2:00 AM - 5:00 AM on the event days.</p>
+                    </div>
+                  ) : <div className="flex flex-col h-full overflow-y-auto custom-scrollbar overscroll-contain" data-lenis-prevent="true">
                     <div className="p-5 sm:p-8 pb-4 sm:pb-6 bg-gradient-to-b from-cyan-950/20 to-transparent shrink-0">
                       <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
                         <QrCode className="w-6 h-6 mr-3 text-cyan-400" /> Complete Payment
