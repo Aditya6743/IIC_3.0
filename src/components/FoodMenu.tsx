@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { ShoppingCart, Plus, Minus, X, Utensils, Coffee, Pizza, IndianRupee, Users, MapPin, QrCode, Store, ArrowLeft, Sandwich, IceCream, Clock, Check, Loader2, Upload } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, X, Utensils, Coffee, Pizza, IndianRupee, Users, UserRound, Phone, MapPin, QrCode, Store, ArrowLeft, Sandwich, IceCream, Clock, Check, Loader2, Upload } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { createPortal } from 'react-dom';
 import { globalLenis } from './SmoothScroll';
@@ -105,7 +105,7 @@ const getMenuItemById = (id: number) => {
 
 const checkIsOpen = () => {
   const now = new Date();
-  const eventStart = new Date(2026, 8, 8, 11, 30); // Sept 8, 2026, 11:30 AM
+  const eventStart = new Date(2026, 9, 7, 5, 0); // Sept 8, 2026, 11:30 AM
 
   // If the event hasn't started yet, keep the menu fully OPEN for preview & testing
   if (now < eventStart) {
@@ -186,6 +186,8 @@ const FoodMenu: React.FC = () => {
         items: cartItems,
         total: totalAmount,
         teamName,
+        teamLeaderName,
+        teamLeaderPhone,
         roomNo,
         paymentImage: paymentScreenshot?.data,
         timestamp: Date.now(),
@@ -199,6 +201,8 @@ const FoodMenu: React.FC = () => {
           {
             order_id: orderId,
             team_name: teamName,
+            team_leader_name: teamLeaderName,
+            team_leader_phone: teamLeaderPhone,
             room_no: roomNo,
             total_amount: totalAmount,
             items: cartItems,
@@ -233,12 +237,16 @@ const FoodMenu: React.FC = () => {
     setIsPaymentOpen(false);
     setCheckoutStep(1);
     setTeamName('');
+    setTeamLeaderName('');
+    setTeamLeaderPhone('');
     setRoomNo('');
     setPaymentScreenshot(null);
   };
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState<1 | 2 | 3>(1);
   const [teamName, setTeamName] = useState('');
+  const [teamLeaderName, setTeamLeaderName] = useState('');
+  const [teamLeaderPhone, setTeamLeaderPhone] = useState('');
   const [roomNo, setRoomNo] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState<{name: string, data: string} | null>(null);
@@ -670,6 +678,38 @@ const FoodMenu: React.FC = () => {
                       </div>
 
                       <div className="space-y-2 relative">
+                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest ml-1">Team Leader Name</label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <UserRound className="h-5 w-5 text-cyan-500/50" />
+                          </div>
+                          <input
+                            type="text"
+                            value={teamLeaderName}
+                            onChange={(e) => setTeamLeaderName(e.target.value)}
+                            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-cyan-400/50 focus:bg-cyan-950/10 transition-all placeholder:text-gray-600 shadow-inner"
+                            placeholder="e.g. Alex Johnson"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 relative">
+                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest ml-1">Team Leader Phone Number</label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <Phone className="h-5 w-5 text-cyan-500/50" />
+                          </div>
+                          <input
+                            type="tel"
+                            value={teamLeaderPhone}
+                            onChange={(e) => setTeamLeaderPhone(e.target.value)}
+                            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-cyan-400/50 focus:bg-cyan-950/10 transition-all placeholder:text-gray-600 shadow-inner"
+                            placeholder="e.g. 9876543210"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 relative">
                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-widest ml-1">Room Number</label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -688,7 +728,7 @@ const FoodMenu: React.FC = () => {
                     
                     <div className="mt-8 pt-6 border-t border-white/5">
                       <button
-                        disabled={!teamName.trim() || !roomNo.trim() || totalItems === 0}
+                        disabled={!teamName.trim() || !teamLeaderName.trim() || !teamLeaderPhone.trim() || !roomNo.trim() || totalItems === 0}
                         onClick={() => setCheckoutStep(2)}
                         className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold rounded-2xl hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] flex items-center justify-center"
                       >

@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.109.0",
+    "@supabase/supabase-js": "^2.115.0",
     "@types/node": "^26.1.0",
     "@vercel/analytics": "^2.0.1",
     "class-variance-authority": "^0.7.1",
