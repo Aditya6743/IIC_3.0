@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { createPortal } from 'react-dom';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { galleryItems, galleryCategories, type GalleryItem, type GalleryCategory } from '../data/galleryData';
@@ -136,10 +137,111 @@ const GalleryCard: React.FC<GalleryCardProps> = ({ item, index, openLightbox }) 
   );
 };
 
+
+interface LightboxModalProps {
+  item: GalleryItem;
+  currentIndex: number;
+  totalItems: number;
+  isZoomed: boolean;
+  setIsZoomed: (z: boolean) => void;
+  closeLightbox: () => void;
+  navigateLightbox: (dir: number) => void;
+}
+
+const LightboxModal: React.FC<LightboxModalProps> = ({
+  item, currentIndex, totalItems, isZoomed, setIsZoomed, closeLightbox, navigateLightbox
+}) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-[10000] flex flex-col items-center justify-between p-4 bg-black/95 backdrop-blur-md"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Image gallery viewer"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) closeLightbox();
+      }}
+      onWheel={(e) => e.stopPropagation()}
+    >
+      {/* Lightbox Header Controls */}
+      <div className="w-full flex items-center justify-between p-3 relative z-10">
+        <div className="text-gray-400 font-mono text-sm px-2">
+          {currentIndex + 1} / {totalItems}
+        </div>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setIsZoomed(!isZoomed)}
+            className="p-2.5 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:border-white/30 transition-all duration-200"
+            aria-label={isZoomed ? 'Zoom out image' : 'Zoom in image'}
+          >
+            {isZoomed ? <ZoomOut className="h-5 w-5" /> : <ZoomIn className="h-5 w-5" />}
+          </button>
+          <button
+            onClick={closeLightbox}
+            className="p-2.5 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:border-white/30 transition-all duration-200"
+            aria-label="Close image viewer"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Lightbox Main Stage */}
+      <div className="flex-1 w-full flex items-center justify-center relative max-h-[80vh]">
+        <button
+          onClick={() => navigateLightbox(-1)}
+          className="absolute left-2 md:left-4 p-3 rounded-full bg-black/60 border border-white/15 text-gray-300 hover:text-white hover:border-cyan-400/50 hover:bg-black/80 transition-all duration-200 z-10"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+
+        <div
+          className="max-w-5xl max-h-[75vh] px-10 md:px-14 overflow-hidden flex items-center justify-center select-none"
+          onClick={() => setIsZoomed(!isZoomed)}
+        >
+          <motion.img
+            key={item.id}
+            src={item.image}
+            alt={item.caption}
+            decoding="async"
+            initial={{ scale: 0.97, opacity: 0 }}
+            animate={{ scale: isZoomed ? 1.25 : 1, opacity: 1 }}
+            exit={{ scale: 0.97, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            className={`max-w-full max-h-[72vh] rounded-xl object-contain shadow-2xl transition-transform duration-300 ${
+              isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
+            }`}
+          />
+        </div>
+
+        <button
+          onClick={() => navigateLightbox(1)}
+          className="absolute right-2 md:right-4 p-3 rounded-full bg-black/60 border border-white/15 text-gray-300 hover:text-white hover:border-cyan-400/50 hover:bg-black/80 transition-all duration-200 z-10"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+      </div>
+
+      {/* Lightbox Footer Details */}
+      <div className="w-full max-w-xl text-center pb-6 px-4">
+        <Badge variant="cyan" className="mb-2 text-xs">{item.category}</Badge>
+        <h2 className="text-xl font-bold text-white mb-1.5 leading-tight">{item.text}</h2>
+        <p className="text-gray-300 text-sm leading-relaxed mb-1">{item.caption}</p>
+        <span className="text-[11px] text-gray-500 font-mono">{item.date}</span>
+      </div>
+    </motion.div>
+  );
+};
+
 const GalleryContent: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<GalleryCategory>('All');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
 
   const headerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(headerRef, { once: true, margin: '-60px' });
@@ -284,111 +386,25 @@ const GalleryContent: React.FC = () => {
       </div>
 
       {/* ── High-Performance Lightbox Modal ────────────────────────────────── */}
-      <AnimatePresence>
-        {lightboxIndex !== null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-between p-4 bg-black/95 backdrop-blur-md"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Image gallery viewer"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) closeLightbox();
-            }}
-          >
-            {/* Lightbox Header Controls */}
-            <div className="w-full flex items-center justify-between p-3 relative z-10">
-              {/* Counter label */}
-              <div className="text-gray-400 font-mono text-sm px-2">
-                {lightboxIndex + 1} / {filteredItems.length}
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2.5">
-                <button
-                  onClick={() => setIsZoomed(!isZoomed)}
-                  className="p-2.5 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:border-white/30 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                  aria-label={isZoomed ? 'Zoom out image' : 'Zoom in image'}
-                  title={isZoomed ? 'Zoom out' : 'Zoom in'}
-                >
-                  {isZoomed ? <ZoomOut className="h-5 w-5" /> : <ZoomIn className="h-5 w-5" />}
-                </button>
-                <button
-                  onClick={closeLightbox}
-                  className="p-2.5 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:border-white/30 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                  aria-label="Close image viewer"
-                  title="Close viewer"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
+      {isMounted && typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {lightboxIndex !== null && (
+            <LightboxModal
+              key="lightbox"
+              item={filteredItems[lightboxIndex]}
+              currentIndex={lightboxIndex}
+              totalItems={filteredItems.length}
+              isZoomed={isZoomed}
+              setIsZoomed={setIsZoomed}
+              closeLightbox={closeLightbox}
+              navigateLightbox={navigateLightbox}
+            />
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
-            {/* Lightbox Main Stage */}
-            <div className="flex-1 w-full flex items-center justify-center relative max-h-[80vh]">
-              {/* Left Arrow Button */}
-              <button
-                onClick={() => navigateLightbox(-1)}
-                className="absolute left-2 md:left-4 p-3 rounded-full bg-black/60 border border-white/15 text-gray-300 hover:text-white hover:border-cyan-400/50 hover:bg-black/80 transition-all duration-200 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                aria-label="Previous image"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-
-              {/* Centered Image Container */}
-              <div
-                className="max-w-5xl max-h-[75vh] px-10 md:px-14 overflow-hidden flex items-center justify-center select-none"
-                onClick={() => setIsZoomed(!isZoomed)}
-              >
-                <motion.img
-                  key={filteredItems[lightboxIndex].id}
-                  src={filteredItems[lightboxIndex].image}
-                  alt={filteredItems[lightboxIndex].caption}
-                  decoding="async"
-                  initial={{ scale: 0.97, opacity: 0 }}
-                  animate={{
-                    scale: isZoomed ? 1.25 : 1,
-                    opacity: 1,
-                  }}
-                  exit={{ scale: 0.97, opacity: 0 }}
-                  transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-                  className={`max-w-full max-h-[72vh] rounded-xl object-contain shadow-2xl transition-transform duration-300 ${
-                    isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
-                  }`}
-                />
-              </div>
-
-              {/* Right Arrow Button */}
-              <button
-                onClick={() => navigateLightbox(1)}
-                className="absolute right-2 md:right-4 p-3 rounded-full bg-black/60 border border-white/15 text-gray-300 hover:text-white hover:border-cyan-400/50 hover:bg-black/80 transition-all duration-200 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                aria-label="Next image"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-            </div>
-
-            {/* Lightbox Footer Details */}
-            <div className="w-full max-w-xl text-center pb-6 px-4">
-              <Badge variant="cyan" className="mb-2 text-xs">
-                {filteredItems[lightboxIndex].category}
-              </Badge>
-              <h2 className="text-xl font-bold text-white mb-1.5 leading-tight">
-                {filteredItems[lightboxIndex].text}
-              </h2>
-              <p className="text-gray-300 text-sm leading-relaxed mb-1">
-                {filteredItems[lightboxIndex].caption}
-              </p>
-              <span className="text-[11px] text-gray-500 font-mono">
-                {filteredItems[lightboxIndex].date}
-              </span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
