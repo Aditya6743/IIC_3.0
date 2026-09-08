@@ -26,6 +26,92 @@ const aspectsResources = [
   { label: 'Siemens atlas-based scoring reference', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7966210/' },
 ];
 
+const StatementModal = ({ 
+  statement, 
+  onClose 
+}: { 
+  statement: ProblemStatement; 
+  onClose: () => void 
+}) => {
+  return (
+    <motion.div
+      key="ps-modal"
+      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      onWheel={(event) => {
+        if (event.target === event.currentTarget) event.preventDefault();
+      }}
+      role="presentation"
+      onKeyDown={(event) => event.key === 'Escape' && onClose()}
+    >
+      <motion.div
+        className="relative max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-emerald-300/30 bg-[#07171b]/95 p-7 shadow-[0_24px_90px_rgba(0,0,0,0.75),0_0_40px_rgba(16,185,129,0.12)] backdrop-blur-xl md:p-10"
+        initial={{ opacity: 0, y: 20, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 20, scale: 0.97 }}
+        onClick={(event) => event.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="statement-title"
+        aria-describedby="statement-summary"
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-5 top-5 rounded-full border border-white/10 bg-white/[0.06] p-2.5 text-gray-300 transition-colors hover:border-emerald-300/50 hover:bg-emerald-300/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+          aria-label="Close problem statement details"
+        >
+          <X className="h-5 w-5" aria-hidden="true" />
+        </button>
+        <div className="mb-7 flex items-start gap-4 pr-12">
+          <div className="mt-1 h-10 w-1 shrink-0 rounded-full bg-gradient-to-b from-emerald-300 to-cyan-400" />
+          <div>
+            <span className="mb-3 inline-block rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-200">
+              {statement.category}
+            </span>
+            <h2 id="statement-title" className="text-2xl font-bold leading-tight text-white md:text-4xl">
+              {statement.title}
+            </h2>
+          </div>
+        </div>
+        <div className="border-t border-white/10 pt-6">
+          <p id="statement-summary" className="text-base font-medium leading-8 text-gray-200 md:text-lg">
+            {statement.summary}
+          </p>
+          {statement.description && (
+            <p className="mt-6 whitespace-pre-line border-l-2 border-emerald-300/70 pl-4 text-sm leading-7 text-gray-300 md:text-base">
+              {statement.description}
+            </p>
+          )}
+          {statement.id === 'health-aspects-scoring' && (
+            <div className="mt-8 border-t border-white/10 pt-6">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-200">
+                Resource Links
+              </h3>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {aspectsResources.map((resource) => (
+                  <a
+                    key={resource.url}
+                    href={resource.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-gray-300 transition-colors hover:border-emerald-300/40 hover:bg-emerald-300/10 hover:text-emerald-100"
+                  >
+                    {resource.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 const ProblemStatementsContent: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMounted, setIsMounted] = useState(false);
@@ -34,45 +120,28 @@ const ProblemStatementsContent: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
 
-  useEffect(() => {
-    if (!selectedStatement) return;
-
-    const previousOverflow = document.body.style.overflow;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setSelectedStatement(null);
-    };
-
-    document.body.style.overflowY = 'scroll';
-    document.addEventListener('keydown', closeOnEscape);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener('keydown', closeOnEscape);
-    };
-  }, [selectedStatement]);
-
   const filteredStatements = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return statementData;
-
-    return statementData.filter((statement) =>
-      [statement.title, statement.category, statement.summary, statement.description ?? '']
-        .join(' ')
-        .toLowerCase()
-        .includes(query),
+    if (!searchQuery.trim()) return statementData;
+    const lowerQuery = searchQuery.toLowerCase();
+    return statementData.filter(
+      (statement) =>
+        statement.title.toLowerCase().includes(lowerQuery) ||
+        statement.category.toLowerCase().includes(lowerQuery) ||
+        statement.summary.toLowerCase().includes(lowerQuery)
     );
   }, [searchQuery]);
 
   return (
-    <div ref={sectionRef} className="min-h-screen space-bg">
-      <main className="container mx-auto px-4 pt-32 pb-24">
+    <div className="min-h-screen space-bg" ref={sectionRef}>
+      <main className="container mx-auto px-4 pb-20 pt-32">
         <motion.header
-          className="mx-auto mb-14 max-w-4xl text-center"
+          className="mb-12 text-center"
           initial={{ opacity: 0, y: 24 }}
-          animate={isInView ? { opacity: 1, y: 0 } : undefined}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-300/80">
-            IIC 3.0 / Challenge Library
+          <p className="mb-4 inline-block rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-1.5 text-sm font-semibold tracking-wider text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+            INNOVATION TRACKS
           </p>
           <h1 className="mb-5 text-4xl font-bold text-white md:text-6xl">
             Problem <span className="gradient-text">Statements</span>
@@ -143,85 +212,16 @@ const ProblemStatementsContent: React.FC = () => {
         )}
       </main>
 
-            {isMounted && typeof document !== 'undefined' && createPortal(
+      {isMounted && typeof document !== 'undefined' && createPortal(
         <AnimatePresence>
-        {selectedStatement && (
-          <motion.div
-            key="ps-modal" className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedStatement(null)}
-            onWheel={(event) => {
-              if (event.target === event.currentTarget) event.preventDefault();
-            }}
-            role="presentation"
-            onKeyDown={(event) => event.key === 'Escape' && setSelectedStatement(null)}
-          >
-            <motion.div
-              className="relative max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-emerald-300/30 bg-[#07171b]/95 p-7 shadow-[0_24px_90px_rgba(0,0,0,0.75),0_0_40px_rgba(16,185,129,0.12)] backdrop-blur-xl md:p-10"
-              initial={{ opacity: 0, y: 20, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.97 }}
-              onClick={(event) => event.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="statement-title"
-              aria-describedby="statement-summary"
-            >
-              <button
-                type="button"
-                onClick={() => setSelectedStatement(null)}
-                className="absolute right-5 top-5 rounded-full border border-white/10 bg-white/[0.06] p-2.5 text-gray-300 transition-colors hover:border-emerald-300/50 hover:bg-emerald-300/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
-                aria-label="Close problem statement details"
-              >
-                <X className="h-5 w-5" aria-hidden="true" />
-              </button>
-              <div className="mb-7 flex items-start gap-4 pr-12">
-                <div className="mt-1 h-10 w-1 shrink-0 rounded-full bg-gradient-to-b from-emerald-300 to-cyan-400" />
-                <div>
-                  <span className="mb-3 inline-block rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-200">
-                    {selectedStatement.category}
-                  </span>
-                  <h2 id="statement-title" className="text-2xl font-bold leading-tight text-white md:text-4xl">
-                    {selectedStatement.title}
-                  </h2>
-                </div>
-              </div>
-              <div className="border-t border-white/10 pt-6">
-                <p id="statement-summary" className="text-base font-medium leading-8 text-gray-200 md:text-lg">
-                  {selectedStatement.summary}
-                </p>
-                {selectedStatement.description && (
-                  <p className="mt-6 whitespace-pre-line border-l-2 border-emerald-300/70 pl-4 text-sm leading-7 text-gray-300 md:text-base">
-                    {selectedStatement.description}
-                  </p>
-                )}
-                {selectedStatement.id === 'health-aspects-scoring' && (
-                  <div className="mt-8 border-t border-white/10 pt-6">
-                    <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-200">
-                      Resource Links
-                    </h3>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {aspectsResources.map((resource) => (
-                        <a
-                          key={resource.url}
-                          href={resource.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-gray-300 transition-colors hover:border-emerald-300/40 hover:bg-emerald-300/10 hover:text-emerald-100"
-                        >
-                          {resource.label}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-              </AnimatePresence>,
+          {selectedStatement && (
+            <StatementModal 
+              key="modal" 
+              statement={selectedStatement} 
+              onClose={() => setSelectedStatement(null)} 
+            />
+          )}
+        </AnimatePresence>,
         document.body
       )}
     </div>
