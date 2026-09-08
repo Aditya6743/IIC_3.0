@@ -38,7 +38,7 @@ const faqItems: FAQItem[] = [
   {
     question: 'Will there be food provided?',
     answer:
-      'Yes, food and refreshments will be provided throughout the event. Stay focused — we\'ll keep your hunger in check! 🍽️',
+      'Yes, food and refreshments will be provided throughout the event for the Outhouse participants. Stay focused — we\'ll keep your hunger in check! 🍽️',
   },
   {
     question: 'Can I work on a pre-existing project?',
