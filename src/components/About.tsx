@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { Code, Lightbulb, Users, Trophy, Sparkles } from 'lucide-react';
 import { motion, useInView, useMotionValue, useTransform } from 'framer-motion';
-import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const fadeUp = {

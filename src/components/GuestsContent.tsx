@@ -17,7 +17,7 @@ const guests = [
   }
 ];
 
-const GuestCard = ({ guest, index, isInView }: any) => {
+const GuestCard = ({ guest, index, isInView }: {guest: any, index: number, isInView: boolean}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
