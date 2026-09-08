@@ -653,15 +653,15 @@ const FoodMenu = () => {
                     </div>
 
                     <div className="px-4 sm:px-8 py-2 flex flex-col items-center justify-center flex-grow">
-                      <div className="bg-white p-3 rounded-2xl shadow-[0_0_50px_rgba(34,211,238,0.15)] mb-4 relative group w-[180px] sm:w-[220px] aspect-square flex items-center justify-center overflow-hidden">
+                      <div className="bg-white p-4 rounded-2xl shadow-[0_0_50px_rgba(34,211,238,0.15)] mb-4 relative group w-[min(86vw,320px)] aspect-square flex items-center justify-center overflow-hidden">
                         <QRCodeCanvas
                           value={upiLink}
-                          size={200}
+                          size={320}
                           bgColor="#ffffff"
                           fgColor="#000000"
-                          level="H"
-                          includeMargin={false}
-                          className="w-full h-full"
+                          level="M"
+                          includeMargin
+                          className="block w-full h-full"
                         />
                         {/* Premium animated corner brackets */}
                         <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-cyan-400 rounded-tl-xl opacity-0 group-hover:opacity-100 transition-opacity" />
