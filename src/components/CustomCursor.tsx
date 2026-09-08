@@ -45,7 +45,7 @@ const CustomCursor: React.FC = () => {
     <>
       {/* Tiny Core Dot (Instant tracking) */}
       <motion.div
-        className="fixed top-0 left-0 w-2 h-2 bg-cyan-400 rounded-full pointer-events-none z-[9999] mix-blend-screen shadow-[0_0_10px_rgba(34,211,238,0.8)]"
+        className="fixed top-0 left-0 w-2 h-2 bg-cyan-400 rounded-full pointer-events-none z-[99999] mix-blend-screen shadow-[0_0_10px_rgba(34,211,238,0.8)]"
         animate={{
           x: mousePosition.x - 4,
           y: mousePosition.y - 4,
@@ -56,7 +56,7 @@ const CustomCursor: React.FC = () => {
 
       {/* Trailing Ring (Spring physics) */}
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border border-cyan-400/50 rounded-full pointer-events-none z-[9998] mix-blend-screen flex items-center justify-center"
+        className="fixed top-0 left-0 w-8 h-8 border border-cyan-400/50 rounded-full pointer-events-none z-[99998] mix-blend-screen flex items-center justify-center"
         style={{
           x: springX,
           y: springY,
