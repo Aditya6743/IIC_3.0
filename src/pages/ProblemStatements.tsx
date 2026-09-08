@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Footer from '../components/Footer';
-import ComingSoon from '../components/ComingSoon';
+import ProblemStatementsContent from '../components/ProblemStatementsContent';
 
 const ProblemStatements: React.FC = () => {
   useEffect(() => {
@@ -9,10 +9,7 @@ const ProblemStatements: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-transparent relative">
-      <ComingSoon
-        title="Problem Statements Coming Soon"
-        description="We are curating cutting-edge problem statements across various technological domains. Stay tuned for the full list!"
-      />
+      <ProblemStatementsContent />
       <Footer />
     </div>
   );
