@@ -21,6 +21,9 @@ const menuItems = [
 const MAX_ITEM_QUANTITY = 40;
 const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024;
 const MAX_SCREENSHOT_DIMENSION = 1400;
+const PAYMENT_UPI_ID = '8903244085@axisbank';
+const PAYMENT_PHONE = '8903244085';
+const PAYMENT_NAME = 'SARATH';
 
 const isPaymentWindowOpen = (date = new Date()) => {
   const isEventMonth = date.getFullYear() === 2026 && date.getMonth() === 8;
@@ -327,7 +330,7 @@ const FoodMenu = () => {
 
   const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const upiLink = `upi://pay?pa=8903244085@axisbank&pn=${encodeURIComponent('SARATH')}&am=${totalAmount.toFixed(2)}&cu=INR`;
+  const upiLink = `upi://pay?pa=${encodeURIComponent(PAYMENT_UPI_ID)}&pn=${encodeURIComponent(PAYMENT_NAME)}&am=${totalAmount.toFixed(2)}&cu=INR`;
 
   return (
     <div className="min-h-screen space-bg relative pb-48">
@@ -668,6 +671,17 @@ const FoodMenu = () => {
                         <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-cyan-400 rounded-tr-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-cyan-400 rounded-bl-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-cyan-400 rounded-br-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+
+                      <div className="w-full max-w-[320px] rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
+                        <div className="flex items-center justify-between gap-4">
+                          <span className="text-gray-400">UPI ID</span>
+                          <span className="text-right font-semibold text-white break-all">{PAYMENT_UPI_ID}</span>
+                        </div>
+                        <div className="mt-2 flex items-center justify-between gap-4">
+                          <span className="text-gray-400">UPI Number</span>
+                          <span className="text-right font-semibold text-white">{PAYMENT_PHONE}</span>
+                        </div>
                       </div>
 
                       {/* Screenshot Upload Section */}
