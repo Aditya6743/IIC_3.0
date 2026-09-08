@@ -28,6 +28,8 @@ const aspectsResources = [
 
 const ProblemStatementsContent: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
   const [selectedStatement, setSelectedStatement] = useState<ProblemStatement | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
@@ -141,7 +143,7 @@ const ProblemStatementsContent: React.FC = () => {
         )}
       </main>
 
-            {typeof document !== 'undefined' && createPortal(
+            {isMounted && typeof document !== 'undefined' && createPortal(
         <AnimatePresence>
         {selectedStatement && (
           <motion.div
