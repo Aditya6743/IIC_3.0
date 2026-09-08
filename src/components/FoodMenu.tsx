@@ -75,7 +75,7 @@ const FoodMenu = () => {
       const isSept8 = day === 8;
       const isSept9 = day === 9;
       const isWindow1 = h >= 23 || h < 1; // 11 PM - 1 AM
-      const isWindow2 = h >= 2 && h < 5;  // 2 AM - 5 AM
+      const isWindow2 = h >= 2 && h < 4;  // 2 AM - 4 AM
       
       if ((isSept8 || isSept9) && (isWindow1 || isWindow2)) {
         setIsOpen(true);
