@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { ArrowUpRight, Search, X } from 'lucide-react';
 import problemStatements from '@/data/problemstatement.json';
@@ -140,7 +141,8 @@ const ProblemStatementsContent: React.FC = () => {
         )}
       </main>
 
-      <AnimatePresence>
+            {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
         {selectedStatement && (
           <motion.div
             className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
@@ -217,7 +219,9 @@ const ProblemStatementsContent: React.FC = () => {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+              </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };
