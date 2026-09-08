@@ -363,7 +363,7 @@ const FoodMenu = () => {
               Food delivery is only available during specific hackathon windows:
               <br/><br/>
               <span className="text-cyan-400 font-bold block mb-2">11:00 PM - 1:00 AM</span>
-              <span className="text-cyan-400 font-bold block">2:00 AM - 5:00 AM</span>
+              <span className="text-cyan-400 font-bold block">2:00 AM - 4:00 AM</span>
               <br/>
               Check back during these times to order!
             </p>
