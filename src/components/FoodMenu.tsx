@@ -21,7 +21,7 @@ const menuItems = [
 const MAX_ITEM_QUANTITY = 40;
 const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024;
 const MAX_SCREENSHOT_DIMENSION = 1400;
-const PAYMENT_UPI_ID = '8903244085@axisbank';
+const PAYMENT_UPI_ID = 'sarathmohanraj28@okaxis';
 const PAYMENT_PHONE = '8903244085';
 const PAYMENT_NAME = 'SARATH';
 
