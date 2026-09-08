@@ -131,11 +131,12 @@ const FoodMenu = () => {
       const isEventMonth = now.getFullYear() === 2026 && now.getMonth() === 8;
       const day = now.getDate();
       const h = now.getHours();
+      const minutes = now.getMinutes();
       
       const isSept8 = isEventMonth && day === 8;
       const isSept9 = isEventMonth && day === 9;
       const isWindow1 = h >= 23 || h < 1; // 11 PM - 1 AM
-      const isWindow2 = h >= 2 && h < 5;  // 2 AM - 5 AM
+      const isWindow2 = (h === 2 && minutes >= 30) || h === 3; // 2:30 AM - 4 AM
       
       if ((isSept8 || isSept9) && (isWindow1 || isWindow2)) {
         setIsOpen(true);
@@ -468,7 +469,7 @@ const FoodMenu = () => {
               Food delivery is only available during specific hackathon windows:
               <br/><br/>
               <span className="text-cyan-400 font-bold block mb-2">11:00 PM - 1:00 AM</span>
-              <span className="text-cyan-400 font-bold block">2:00 AM - 5:00 AM</span>
+              <span className="text-cyan-400 font-bold block">2:30 AM - 4:00 AM</span>
               <br/>
               Check back during these times to order!
             </p>
